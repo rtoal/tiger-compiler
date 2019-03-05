@@ -1,15 +1,16 @@
 /*
  * Grammar Tests
  *
- * These tests check that we’ve constructed our grammar correctly: that
- * programs that we expect to be matched by the grammar are matched, and
- * those that we expect not to be matched will cause an error to be thrown.
+ * These tests check that we’ve constructed our grammar correctly: they
+ * invoke the syntax checker for a variety of programs (whatever you’ve)
+ * stored in this folder, and expect the syntax checker to return true or
+ * false, as appropriate.
  */
 
 const fs = require('fs');
 const parse = require('../syntax-checker');
 
-describe('The grammar', () => {
+describe('The syntax checker', () => {
   fs.readdirSync(__dirname).forEach((name) => {
     if (name.endsWith('.error.tig')) {
       test(`detects a syntax error in ${name}`, (done) => {

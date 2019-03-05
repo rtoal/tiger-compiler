@@ -1,0 +1,5 @@
+let
+  function addTwo(x: int): int = x + 2
+in
+  addTwo(ord("dog"))
+end
