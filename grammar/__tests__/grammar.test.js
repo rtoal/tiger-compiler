@@ -7,7 +7,7 @@
  */
 
 const fs = require('fs');
-const parse = require('../parser');
+const parse = require('../syntax-checker');
 
 describe('The grammar', () => {
   fs.readdirSync(__dirname).forEach((name) => {
