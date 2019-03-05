@@ -42,12 +42,12 @@ Tiger {
   FieldBind    = id "=" Exp
   Call         = id "(" ListOf<Exp, ","> ")"
   ExpSeq       = "(" ListOf<Exp, ";"> ")"
-  id           = letter idrest
-  idrest       = ~keyword (letter | digit | "_")*
-  typeId       = id
   keyword      = ("array" | "break" | "do" | "else" | "end" | "for" | "function"
                | "if" | "in" | "let" | "nil" | "of" | "then" | "to" | "type"
                | "var" | "while") ~idrest
+  id           = ~keyword letter idrest*
+  idrest       = letter | digit | "_"
+  typeId       = id
   intlit       = digit+
   stringlit    = "\"" char* "\""
   char         = ~"\\" ~"\"" ~"\n" any | escape

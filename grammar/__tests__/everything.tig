@@ -8,10 +8,13 @@ let
     let
       var a: int := 0
       var b: int := 1
-    in (
-      while n > 0 do nil
-    )
+      var t := 0  /* Tiger does not have parallel assignment */
+    in
+      while n > 0 do
+        (t := a; a := b; b := t + b; n := n - 1);
+      a
     end
 in
-  print(fib(20))
+  for i := 1 to 10 do
+    print(fib(20))
 end
