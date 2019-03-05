@@ -1,0 +1,17 @@
+let
+  type Circle = {
+    x: int,
+    y: int,
+    color: string
+  }
+  function fib(n: int): int =
+    let
+      var a: int := 0
+      var b: int := 1
+    in (
+      while n > 0 do nil
+    )
+    end
+in
+  print(fib(20))
+end

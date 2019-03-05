@@ -28,7 +28,7 @@ Tiger {
                | Exp6
   Exp6         = "-" Exp7                               -- negation
                | Exp7
-  Exp7         = Literal | Var | ArrayExp | RecordExp | Call | ExpSeq
+  Exp7         = Call | ArrayExp | RecordExp | ExpSeq | Literal | Var
   Literal      = "nil" | intlit | stringlit
   Var          = Var "[" Exp "]"                        -- subscripted
                | Var "." id                             -- field
@@ -44,7 +44,7 @@ Tiger {
   keyword      = ("array" | "break" | "do" | "else" | "end" | "for" | "function"
                | "if" | "in" | "let" | "nil" | "of" | "then" | "to" | "type"
                | "var" | "while") ~idrest
-  intlit       = digit*
+  intlit       = digit+
   stringlit    = "\"" char* "\""
   char         = ~"\\" ~"\"" ~"\n" any | escape
   escape       = "\\" ("\\" | "\"" | "n" | "t" | codepoint)

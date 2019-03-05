@@ -14,14 +14,14 @@ describe('The grammar', () => {
     if (name.endsWith('.error.tig')) {
       test(`detects a syntax error in ${name}`, (done) => {
         fs.readFile(`${__dirname}/${name}`, 'utf-8', (err, input) => {
-          expect(() => parse(input)).toThrow(/Syntax Error/);
+          expect(parse(input)).toBe(false);
           done();
         });
       });
     } else if (name.endsWith('.tig')) {
       test(`matches the program ${name}`, (done) => {
         fs.readFile(`${__dirname}/${name}`, 'utf-8', (err, input) => {
-          expect(parse(input)).toBeTruthy();
+          expect(parse(input)).toBe(true);
           done();
         });
       });
