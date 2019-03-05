@@ -1,0 +1,22 @@
+{
+  "name": "tiger-compiler",
+  "version": "1.0.0",
+  "description": "A compiler for Andrew Appel's Tiger Language",
+  "main": "tiger.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rtoal/tiger-compiler.git"
+  },
+  "author": "Ray Toal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rtoal/tiger-compiler/issues"
+  },
+  "homepage": "https://github.com/rtoal/tiger-compiler#readme",
+  "devDependencies": {
+    "jest": "^24.1.0"
+  }
+}

@@ -1,0 +1,6 @@
+let
+  var x = 2
+in
+  print(x)
+end;
+
