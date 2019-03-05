@@ -68,10 +68,10 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     return new Field(id.ast(), typeid.ast())
   },
   FunDec(_1, id, _2, params, _4, _5, typeid, _6, body) {
-    return new FunDec(id.ast(), params.ast(), typeid.ast(), body.ast());
+    return new FunDec(id.ast(), params.ast(), arrayToNullable(typeid.ast()), body.ast());
   },
   VarDec(_1, id, _2, typeid, _3, init) {
-    return new VarDec(id.ast(), typeid.ast(), init.ast());
+    return new VarDec(id.ast(), arrayToNullable(typeid.ast()), init.ast());
   },
   Exp1_binary(left, op, right) {
     return new BinaryExp(op.ast(), left.ast(), right.ast());

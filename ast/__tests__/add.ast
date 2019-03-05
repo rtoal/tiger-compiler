@@ -5,7 +5,7 @@ Program {
       [ FunDec {
           id: 'addTwo',
           params: [ ArrayType { id: 'x', type: 'int' } ],
-          returnType: [ 'int' ],
+          returnType: 'int',
           body:
            BinaryExp { op: '+', left: 'x', right: Literal { value: 2 } } } ],
      exps:
