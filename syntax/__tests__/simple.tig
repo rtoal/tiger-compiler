@@ -6,5 +6,5 @@ let
   function f(z: int, s: string): int =
     chr(z + size(s))
 in
-  print(concat(f(x, "hello"), "\n"));
+  print(concat(f(x, "hello"), "\n"))
 end

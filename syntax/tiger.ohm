@@ -1,0 +1,41 @@
+Tiger {
+  Program      = Exp
+  Exp          = "let" Dec+ "in" Exps "end"             -- let
+               | "if" Exp "then" Exp ("else" Exp)?      -- if
+               | "while" Exp "do" Exp                   -- while
+               | "for" id ":=" Exp "to" Exp "do" Exp    -- for
+               | Lvalue ":=" Exp                        -- assign
+               | "break"                                -- break
+               | Exp1
+  Dec          = TyDec | VarDec | FunDec
+  TyDec        = "type" typeId "=" Type
+  Type         = typeId | ArrayType | RecordType
+  ArrayType    = "array" "of" TypeId
+  RecordType   = "{" ListOf<FieldDec, ","> "}"
+  FieldDec     = id ":" typeId
+  FunDec       = "function" id "(" ListOf<FieldDec, ","> ")" (":" typeId)? "=" Exp
+  VarDec       = "var" id (":" typeId)? ":=" Exp
+  Exps         = ListOf<Exp, ";">
+  Exp1         = Exp1 "|" Exp2
+               | Exp2
+  Exp2         = Exp2 "&" Exp3
+               | Exp3
+  Exp3         = Exp4 relop Exp4
+               | Exp4
+  Exp4         = Exp4 addop Exp5
+               | Exp5
+  Exp5         = Exp5 mulop Exp6
+               | Exp6
+  Exp6         = "-" Exp7
+               | Exp7
+  Exp7         = Literal | Lvalue | ArrayExp | RecordExp | Call | ExpSeq
+  Literal      = "nil" | intlit | stringlit
+  Lvalue       = Lvalue "[" Exp "]"   -- subscripted
+               | Lvalue "." id        -- field
+               | id
+  ArrayExp     = typeId "[" Exp "]" "of" Exp
+  RecordExp    = typeId "{" ListOf<FieldBind, ","> "}"
+  FieldBind    = id "=" Exp
+  Call         = id "(" ListOf<Exp, ",">) ")"
+  ExpSeq       = "(" ListOf<Exp, ";"> ")"
+}
