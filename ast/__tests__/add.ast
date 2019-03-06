@@ -1,14 +1,12 @@
-Program {
-  exp:
-   LetExp {
-     decs:
-      [ FunDec {
-          id: 'addTwo',
-          params: [ ArrayType { id: 'x', type: 'int' } ],
-          returnType: 'int',
-          body:
-           BinaryExp { op: '+', left: IdExp { id: 'x' }, right: Literal { value: 2 } } } ],
-     exps:
-      [ Call {
-          id: 'addTwo',
-          args: [ Call { id: 'ord', args: [ Literal { value: 'dog' } ] } ] } ] } }
+LetExp {
+  decs:
+   [ FunDec {
+       id: 'addTwo',
+       params: [ Param { id: 'x', type: 'int' } ],
+       returnType: 'int',
+       body:
+        BinaryExp { op: '+', left: IdExp { id: 'x' }, right: Literal { value: 2 } } } ],
+  exps:
+   [ Call {
+       id: 'addTwo',
+       args: [ Call { id: 'ord', args: [ Literal { value: 'dog' } ] } ] } ] }
