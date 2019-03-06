@@ -1,7 +1,6 @@
 const fs = require('fs');
 const ohm = require('ohm-js');
 
-const Program = require('./Program');
 const LetExp = require('./LetExp');
 const IfExp = require('./IfExp');
 const WhileExp = require('./WhileExp');
@@ -11,12 +10,17 @@ const Break = require('./Break');
 const TypeDec = require('./TypeDec');
 const NamedType = require('./NamedType');
 const ArrayType = require('./ArrayType');
+const RecordType = require('./RecordType');
 const Field = require('./Field');
+const Param = require('./Param');
 const FunDec = require('./FunDec');
 const VarDec = require('./VarDec');
 const BinaryExp = require('./BinaryExp');
 const NegationExp = require('./NegationExp');
 const Call = require('./Call');
+const IdExp = require('./IdExp');
+const SubscriptedExp = require('./SubscriptedExp');
+const MemberExp = require('./MemberExp');
 const ArrayExp = require('./ArrayExp');
 const RecordExp = require('./RecordExp');
 const ExpSeq = require('./ExpSeq');
@@ -31,9 +35,6 @@ function arrayToNullable(a) {
 
 /* eslint-disable no-unused-vars */
 const astGenerator = grammar.createSemantics().addOperation('ast', {
-  Program(exp) {
-    return new Program(exp.ast());
-  },
   Exp_let(_1, decs, _2, exps, _3) {
     return new LetExp(decs.ast(), exps.ast());
   },
@@ -64,14 +65,17 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
   RecordType(_1, fieldDecs, _2) {
     return new RecordType(fieldDecs.ast());
   },
-  FieldDec(id, _1, typeid) {
-    return new Field(id.ast(), typeid.ast())
-  },
   FunDec(_1, id, _2, params, _4, _5, typeid, _6, body) {
     return new FunDec(id.ast(), params.ast(), arrayToNullable(typeid.ast()), body.ast());
   },
   VarDec(_1, id, _2, typeid, _3, init) {
     return new VarDec(id.ast(), arrayToNullable(typeid.ast()), init.ast());
+  },
+  Field(id, _1, typeid) {
+    return new Field(id.ast(), typeid.ast())
+  },
+  Param(id, _1, typeid) {
+    return new Param(id.ast(), typeid.ast())
   },
   Exp1_binary(left, op, right) {
     return new BinaryExp(op.ast(), left.ast(), right.ast());
@@ -94,11 +98,14 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
   Literal_nil(_1) {
     return new Nil();
   },
-  Var_subscripted(base, _1, subscript, _2) {
-    return new SubscriptedVar(base.ast(), subscript.ast());
+  Var_id(id) {
+    return new IdExp(id.ast());
   },
-  Var_field(record, _1, field) {
-    return new MemberVar(record.ast(), field.ast());
+  Var_subscripted(array, _1, subscript, _2) {
+    return new SubscriptedExp(array.ast(), subscript.ast());
+  },
+  Var_field(record, _1, id) {
+    return new MemberExp(record.ast(), id.ast());
   },
   ArrayExp(type, _1, size, _2, _3, fill) {
     return new ArrayExp(type.ast(), size.ast(), fill.ast());

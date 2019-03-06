@@ -13,10 +13,11 @@ Tiger {
                | ArrayType
                | RecordType
   ArrayType    = "array" "of" typeId
-  RecordType   = "{" ListOf<FieldDec, ","> "}"
-  FieldDec     = id ":" typeId
-  FunDec       = "function" id "(" ListOf<FieldDec, ","> ")" (":" typeId)? "=" Exp
+  RecordType   = "{" ListOf<Field, ","> "}"
+  FunDec       = "function" id "(" ListOf<Param, ","> ")" (":" typeId)? "=" Exp
   VarDec       = "var" id (":" typeId)? ":=" Exp
+  Field        = id ":" typeId
+  Param        = id ":" typeId
   Exps         = ListOf<Exp, ";">
   Exp1         = Exp1 "|" Exp2                          -- binary
                | Exp2
@@ -36,7 +37,7 @@ Tiger {
                | "nil"                                  -- nil
   Var          = Var "[" Exp "]"                        -- subscripted
                | Var "." id                             -- field
-               | id
+               | id                                     -- id
   ArrayExp     = typeId "[" Exp "]" "of" Exp
   RecordExp    = typeId "{" ListOf<FieldBind, ","> "}"
   FieldBind    = id "=" Exp

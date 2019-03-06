@@ -7,7 +7,7 @@ Program {
           params: [ ArrayType { id: 'x', type: 'int' } ],
           returnType: 'int',
           body:
-           BinaryExp { op: '+', left: 'x', right: Literal { value: 2 } } } ],
+           BinaryExp { op: '+', left: IdExp { id: 'x' }, right: Literal { value: 2 } } } ],
      exps:
       [ Call {
           id: 'addTwo',
