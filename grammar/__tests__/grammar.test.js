@@ -2,9 +2,8 @@
  * Grammar Tests
  *
  * These tests check that we’ve constructed our grammar correctly: they
- * invoke the syntax checker for a variety of programs (whatever you’ve)
- * stored in this folder, and expect the syntax checker to return true or
- * false, as appropriate.
+ * invoke the syntax checker for the programs you’ve stored in this folder,
+ * then expects the syntax checker to return true or false, as appropriate.
  */
 
 const fs = require('fs');

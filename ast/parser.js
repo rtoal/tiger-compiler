@@ -25,6 +25,7 @@ const ArrayExp = require('./ArrayExp');
 const RecordExp = require('./RecordExp');
 const ExpSeq = require('./ExpSeq');
 const Literal = require('./Literal');
+const Nil = require('./Literal');
 
 const grammar = ohm.grammar(fs.readFileSync('grammar/tiger.ohm'));
 
@@ -35,8 +36,8 @@ function arrayToNullable(a) {
 
 /* eslint-disable no-unused-vars */
 const astGenerator = grammar.createSemantics().addOperation('ast', {
-  Exp_let(_1, decs, _2, exps, _3) {
-    return new LetExp(decs.ast(), exps.ast());
+  Exp_let(_1, decs, _2, body, _3) {
+    return new LetExp(decs.ast(), body.ast());
   },
   Exp_if(_1, test, _2, consequent, _3, alternate) {
     return new IfExp(test.ast(), consequent.ast(), arrayToNullable(alternate.ast()));
@@ -72,10 +73,10 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     return new VarDec(id.ast(), arrayToNullable(typeid.ast()), init.ast());
   },
   Field(id, _1, typeid) {
-    return new Field(id.ast(), typeid.ast())
+    return new Field(id.ast(), typeid.ast());
   },
   Param(id, _1, typeid) {
-    return new Param(id.ast(), typeid.ast())
+    return new Param(id.ast(), typeid.ast());
   },
   Exp1_binary(left, op, right) {
     return new BinaryExp(op.ast(), left.ast(), right.ast());
@@ -114,7 +115,7 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     return new RecordExp(type.ast(), fields.ast());
   },
   FieldBind(id, _1, value) {
-    return new FieldBind(id.ast(), value.ast())
+    return new FieldBind(id.ast(), value.ast());
   },
   Call(callee, _1, args, _2) {
     return new Call(callee.ast(), args.ast());

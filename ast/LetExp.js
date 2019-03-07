@@ -1,5 +1,5 @@
 module.exports = class LetExp {
-  constructor(decs, exps) {
-    Object.assign(this, { decs, exps });
+  constructor(decs, body) {
+    Object.assign(this, { decs, body });
   }
-}
+};

@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/rtoal/tiger-compiler#readme",
   "devDependencies": {
+    "eslint": "^5.15.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
     "jest": "^24.1.0"
   },
   "dependencies": {

@@ -1,5 +1,5 @@
 module.exports = class IdExp {
   constructor(id) {
-    this.id = id;
+    Object.assign(this, { id });
   }
 };

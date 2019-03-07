@@ -6,7 +6,7 @@ LetExp {
        returnType: 'int',
        body:
         BinaryExp { op: '+', left: IdExp { id: 'x' }, right: Literal { value: 2 } } } ],
-  exps:
+  body:
    [ Call {
        id: 'addTwo',
        args: [ Call { id: 'ord', args: [ Literal { value: 'dog' } ] } ] } ] }
