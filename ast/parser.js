@@ -23,6 +23,7 @@ const SubscriptedExp = require('./SubscriptedExp');
 const MemberExp = require('./MemberExp');
 const ArrayExp = require('./ArrayExp');
 const RecordExp = require('./RecordExp');
+const FieldBind = require('./FieldBind');
 const ExpSeq = require('./ExpSeq');
 const Literal = require('./Literal');
 const Nil = require('./Literal');
