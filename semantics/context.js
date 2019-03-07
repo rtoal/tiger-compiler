@@ -6,7 +6,7 @@
  *   const Context = require('./semantics/context');
  */
 
-const { IntType, StringType, standardFunctions } = require('./builtins');
+const { standardFunctions } = require('./builtins');
 
 require('./analyzer');
 

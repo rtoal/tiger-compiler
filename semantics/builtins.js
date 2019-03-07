@@ -20,8 +20,8 @@ const standardFunctions = [
     new Param('s', 'string'),
     new Param('t', 'string'),
   ], 'string'),
-  new FunDec('not', [new Param('x', 'int')], null),
-  new FunDec('exit', [new Param('code', 'int')], null),
+  new FunDec('not', [new Param('x', 'int')], 'int'),
+  new FunDec('exit', [new Param('code', 'int')]),
 ];
 
 module.exports = {
