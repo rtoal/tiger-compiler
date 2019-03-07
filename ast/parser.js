@@ -1,32 +1,11 @@
 const fs = require('fs');
 const ohm = require('ohm-js');
 
-const LetExp = require('./LetExp');
-const IfExp = require('./IfExp');
-const WhileExp = require('./WhileExp');
-const ForExp = require('./ForExp');
-const Assignment = require('./Assignment');
-const Break = require('./Break');
-const TypeDec = require('./TypeDec');
-const NamedType = require('./NamedType');
-const ArrayType = require('./ArrayType');
-const RecordType = require('./RecordType');
-const Field = require('./Field');
-const Param = require('./Param');
-const FunDec = require('./FunDec');
-const VarDec = require('./VarDec');
-const BinaryExp = require('./BinaryExp');
-const NegationExp = require('./NegationExp');
-const Call = require('./Call');
-const IdExp = require('./IdExp');
-const SubscriptedExp = require('./SubscriptedExp');
-const MemberExp = require('./MemberExp');
-const ArrayExp = require('./ArrayExp');
-const RecordExp = require('./RecordExp');
-const FieldBind = require('./FieldBind');
-const ExpSeq = require('./ExpSeq');
-const Literal = require('./Literal');
-const Nil = require('./Literal');
+const {
+  ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field, ForExp,
+  FunDec, IdExp, IfExp, LetExp, Literal, MemberExp, NamedType, NegationExp, Nil,
+  Param, RecordExp, RecordType, SubscriptedExp, TypeDec, VarDec, WhileExp,
+} = require('../ast');
 
 const grammar = ohm.grammar(fs.readFileSync('grammar/tiger.ohm'));
 
