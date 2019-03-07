@@ -60,8 +60,8 @@ ExpSeq.prototype.analyze = function (context) {
   this.exps = this.exps.map(e => e.analyze(context));
 };
 
-Field.prototype.analyze = function (/* context */) {
-  /* TODO */
+Field.prototype.analyze = function (context) {
+  this.type = this.type.analyze(context);
 };
 
 FieldBinding.prototype.analyze = function (/* context */) {
@@ -81,7 +81,7 @@ ForExp.prototype.analyze = function (context) {
 
 FunDec.prototype.analyze = function (context) {
   const newContext = context.createChildContextForFunctionBody();
-  this.params.map(p => p.analyze(newContext));
+  this.params.forEach(p => p.analyze(newContext));
   context.add(this);
   if (this.body) {
     this.body = this.body.analyze(newContext);
@@ -121,7 +121,13 @@ MemberExp.prototype.analyze = function (context) {
 };
 
 NamedType.prototype.analyze = function (context) {
-  check.typeHasBeenDeclared(context);
+  if (this.id === 'int') {
+    return IntType;
+  }
+  if (this.id === 'string') {
+    return StringType;
+  }
+  return context.lookupType(this.id);
 };
 
 NegationExp.prototype.analyze = function (context) {
@@ -134,28 +140,49 @@ Nil.prototype.analyze = function () {
   this.type = NilType;
 };
 
-Param.prototype.analyze = function (/* context */) {
-  /* TODO */
+Param.prototype.analyze = function (context) {
+  this.type = this.type.analyze(context);
+  context.add(this);
 };
 
-RecordExp.prototype.analyze = function (/* context */) {
-  /* TODO */
+RecordExp.prototype.analyze = function (context) {
+  this.record = this.record.analyze(context);
+  check.isRecord(this.record);
+  this.record.fieldBindings.forEach((binding) => {
+    const field = this.record.fields.find(f => f.id === binding.id);
+    if (field === null) {
+      throw new Error('No such field');
+    }
+    binding.value.analyze(context);
+    check.typeCompatibility(binding.value, field.type);
+  });
 };
 
-RecordType.prototype.analyze = function (/* context */) {
-  /* TODO */
+RecordType.prototype.analyze = function (context) {
+  this.fields.forEach(field => field.analyze(context));
 };
 
-SubscriptedExp.prototype.analyze = function (/* context */) {
-  /* TODO */
+SubscriptedExp.prototype.analyze = function (context) {
+  this.array = this.array.analyze(context);
+  check.isArray(this.array);
+  this.subscript = this.subscript.analyze(context);
+  check.isInteger(this.subscript);
 };
 
-TypeDec.prototype.analyze = function (/* context */) {
-  /* TODO */
+TypeDec.prototype.analyze = function (context) {
+  this.type = this.type.analyze(context);
+  context.add(this);
 };
 
-VarDec.prototype.analyze = function (/* context */) {
-  /* TODO */
+VarDec.prototype.analyze = function (context) {
+  this.init = this.init.analyze(context);
+  if (this.type) {
+    this.type = this.type.analyze(context);
+    check.typeCompatibility(this.init, this.type);
+  } else {
+    this.type = this.init.type;
+  }
+  context.add(this);
 };
 
 WhileExp.prototype.analyze = function (context) {

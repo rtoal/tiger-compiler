@@ -11,6 +11,10 @@ module.exports = {
     doCheck(type === ArrayType, 'Not an array type');
   },
 
+  isArray(expression) {
+    doCheck(expression.type.constructor === ArrayType, 'Not an array');
+  },
+
   isInteger(expression) {
     doCheck(expression.type === IntType, 'Not an integer');
   },

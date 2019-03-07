@@ -1,1 +1,3 @@
-Call { id: 'print', args: [ Literal { value: 'Hello, world\\n' } ] }
+Call {
+  callee: 'print',
+  args: [ Literal { value: 'Hello, world\\n' } ] }

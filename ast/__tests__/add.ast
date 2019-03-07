@@ -8,5 +8,6 @@ LetExp {
         BinaryExp { op: '+', left: IdExp { id: 'x' }, right: Literal { value: 2 } } } ],
   body:
    [ Call {
-       id: 'addTwo',
-       args: [ Call { id: 'ord', args: [ Literal { value: 'dog' } ] } ] } ] }
+       callee: 'addTwo',
+       args:
+        [ Call { callee: 'ord', args: [ Literal { value: 'dog' } ] } ] } ] }
