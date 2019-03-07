@@ -13,7 +13,7 @@ ArrayExp.prototype.analyze = function (context) {
   this.type = this.type.analyze(context);
   check.isArrayType(this.type);
   this.size = this.size.analyze(context);
-  check.hasIntegerType(this.size);
+  check.isInteger(this.size);
   this.fill = this.fill.analyze(context);
   check.typeCompatibility(this.fill, this.type.memberType);
 };
@@ -50,7 +50,8 @@ BinaryExp.prototype.analyze = function (context) {
 };
 
 Call.prototype.analyze = function (context) {
-  this.callee = context.resolveFunction(this.callee);
+  this.callee = context.lookupValue(this.callee);
+  check.isFunction(this.callee, 'Attempt to call a non-function');
   this.args = this.args.map(arg => arg.analyze(context));
   check.legalArguments(this.args, this.callee);
 };
@@ -78,12 +79,17 @@ ForExp.prototype.analyze = function (context) {
   this.body = this.body.analyze(bodyContext);
 };
 
-FunDec.prototype.analyze = function (/* context */) {
-  /* TODO */
+FunDec.prototype.analyze = function (context) {
+  const newContext = context.createChildContextForFunctionBody();
+  this.params.map(p => p.analyze(newContext));
+  context.add(this);
+  if (this.body) {
+    this.body = this.body.analyze(newContext);
+  }
 };
 
 IdExp.prototype.analyze = function (context) {
-  this.id = context.resolve(this.id);
+  this.id = context.lookupValue(this.id);
 };
 
 IfExp.prototype.analyze = function (context) {

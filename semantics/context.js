@@ -55,10 +55,10 @@ class Context {
   // allowed. Note that if we allowed overloading, this method would have to
   // be a bit more sophisticated.
   add(entity) {
-    if (entity.id in this.declarations) {
-      throw new Error(`Identitier ${entity.id} already declared in this scope`);
+    if (entity.id in this.valueMap) {
+      throw new Error(`Identifier ${entity.id} already declared in this scope`);
     }
-    this.declarations[entity.id] = entity;
+    this.valueMap[entity.id] = entity;
   }
 
   // Returns the type entity bound to the given identifier, starting from this
