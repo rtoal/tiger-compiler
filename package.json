@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "ohm-js": "^0.14.0",
+    "pretty-js": "^0.2.0",
     "yargs": "^13.2.2"
   }
 }

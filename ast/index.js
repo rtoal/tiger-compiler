@@ -26,8 +26,8 @@ class Break {
 }
 
 class Call {
-  constructor(id, args) {
-    Object.assign(this, { id, args });
+  constructor(callee, args) {
+    Object.assign(this, { callee, args });
   }
 }
 
@@ -43,10 +43,16 @@ class Field {
   }
 }
 
+class FieldBinding {
+  constructor(id, value) {
+    Object.assign(this, { id, value });
+  }
+}
+
 class ForExp {
-  constructor(id, low, high, body) {
+  constructor(index, low, high, body) {
     Object.assign(this, {
-      id, low, high, body,
+      index, low, high, body,
     });
   }
 }
@@ -147,7 +153,8 @@ class WhileExp {
 }
 
 module.exports = {
-  ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field, ForExp,
-  FunDec, IdExp, IfExp, LetExp, Literal, MemberExp, NamedType, NegationExp, Nil,
-  Param, RecordExp, RecordType, SubscriptedExp, TypeDec, VarDec, WhileExp,
+  ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field,
+  FieldBinding, ForExp, FunDec, IdExp, IfExp, LetExp, Literal, MemberExp,
+  NamedType, NegationExp, Nil, Param, RecordExp, RecordType, SubscriptedExp,
+  TypeDec, VarDec, WhileExp,
 };

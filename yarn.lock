@@ -569,6 +569,16 @@ compare-versions@^3.2.1:
   resolved "https://registry.yarnpkg.com/compare-versions/-/compare-versions-3.4.0.tgz#e0747df5c9cb7f054d6d3dc3e1dbc444f9e92b26"
   integrity sha512-tK69D7oNXXqUW3ZNo/z7NXTEz22TCF0pTE+YF9cxvaAM9XnkLo1fV621xCLrRR6aevJlKxExkss0vWqUCUpqdg==
 
+complexion-js@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/complexion-js/-/complexion-js-0.2.0.tgz#eb2f81ed7bac7bf151947a48c184af959d4dda4e"
+  integrity sha512-aZd8ke/Y5U9WtvPEN1kRbwfsc/tjTGS1RsJK9IVhealo5qecjkUjLIEzcQhIGoceIA0LQP+o7fMpVeHyj6PaXg==
+
+complexion@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/complexion/-/complexion-0.2.0.tgz#36ae9d8a60db126f940876ef1f963e33ddbaf851"
+  integrity sha512-iTMXoj7mplvpDFZ/jh+Mvnlj0+IBDwjb4DABPDKQL6sCdlLRrtFX9nJaXAMfvnzYhO3VPCjOdJhRHVe36SuzeA==
+
 component-emitter@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/component-emitter/-/component-emitter-1.2.1.tgz#137918d6d78283f7df7a6b7c5a63e140e69425e6"
@@ -2695,6 +2705,11 @@ optimist@^0.6.1:
     minimist "~0.0.1"
     wordwrap "~0.0.2"
 
+option-parser@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/option-parser/-/option-parser-1.0.0.tgz#9d470f969b7cb0cd2bb5b75e998be9961ba57206"
+  integrity sha1-nUcPlpt8sM0rtbdemYvplhulcgY=
+
 optionator@^0.8.1, optionator@^0.8.2:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/optionator/-/optionator-0.8.2.tgz#364c5e409d3f4d6301d6c0b4c05bba50180aeb64"
@@ -2928,6 +2943,21 @@ pretty-format@^24.0.0:
   dependencies:
     ansi-regex "^4.0.0"
     ansi-styles "^3.2.0"
+
+pretty-js@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/pretty-js/-/pretty-js-0.2.0.tgz#a30a868acab8bbfe7f8ca28d4c46cf5fe96c95d7"
+  integrity sha512-QFjuhzgQ+m5MIJZzQWvd5i2Rd3tphqz/j3wXh6Pr8zznCOlY1SpP5MQrOWnfpJGGSYnl8riDriA4/AsHIoDmVw==
+  dependencies:
+    complexion "^0.2.0"
+    complexion-js "^0.2.0"
+    option-parser "^1.0.0"
+    process-files "^1.0.0"
+
+process-files@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/process-files/-/process-files-1.0.0.tgz#2d1ab8487675221841aa2bfdf22085614d588f23"
+  integrity sha1-LRq4SHZ1IhhBqiv98iCFYU1YjyM=
 
 process-nextick-args@~2.0.0:
   version "2.0.0"
