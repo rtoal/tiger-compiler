@@ -15,6 +15,7 @@
     },
     "rules": {
         "object-property-newline": "off",
-        "func-names": "off"
+        "func-names": "off",
+        "no-console": "off"
     }
 }
