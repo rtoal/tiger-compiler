@@ -64,8 +64,8 @@ Field.prototype.analyze = function (context) {
   this.type = this.type.analyze(context);
 };
 
-FieldBinding.prototype.analyze = function (/* context */) {
-  /* TODO */
+FieldBinding.prototype.analyze = function (context) {
+  this.type = this.type.analyze(context);
 };
 
 ForExp.prototype.analyze = function (context) {
@@ -159,7 +159,8 @@ RecordExp.prototype.analyze = function (context) {
 };
 
 RecordType.prototype.analyze = function (context) {
-  this.fields.forEach(field => field.analyze(context));
+  // this.fields.forEach(field => field.analyze(context));
+  // this.fields.forEach(...this.)
 };
 
 SubscriptedExp.prototype.analyze = function (context) {
