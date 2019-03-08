@@ -14,9 +14,10 @@
 const prettyJs = require('pretty-js');
 
 const {
-  ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field, ForExp,
-  FunDec, IdExp, IfExp, LetExp, Literal, MemberExp, NamedType, NegationExp, Nil,
-  Param, RecordExp, RecordType, SubscriptedExp, TypeDec, VarDec, WhileExp,
+  ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field,
+  FieldBinding, ForExp, FunDec, IdExp, IfExp, LetExp, Literal, MemberExp,
+  NamedType, NegationExp, Nil, Param, RecordExp, RecordType, SubscriptedExp,
+  TypeDec, VarDec, WhileExp,
 } = require('../ast');
 
 const { Context } = require('../semantics/context');
@@ -25,12 +26,12 @@ function makeOp(op) {
   return { '=': '===', '<>': '!==' }[op] || op;
 }
 
-// jsName(e) takes any PlainScript object with an id property, such as a
+// javaScriptId(e) takes any PlainScript object with an id property, such as a
 // Variable, Parameter, or FunctionDeclaration, and produces a JavaScript
 // name by appending a unique identifying suffix, such as '_1' or '_503'.
 // It uses a cache so it can return the same exact string each time it is
 // called with a particular entity.
-const jsName = (() => {
+const javaScriptId = (() => {
   let lastId = 0;
   const map = new Map();
   return (v) => {
@@ -44,7 +45,7 @@ const jsName = (() => {
 function generateLibraryFunctions() {
   function generateLibraryStub(name, params, body) {
     const entity = Context.INITIAL.declarations[name];
-    return `function ${jsName(entity)}(${params}) {${body}}`;
+    return `function ${javaScriptId(entity)}(${params}) {${body}}`;
   }
   return [
     generateLibraryStub('print', '_', 'console.log(_);'),
@@ -67,11 +68,11 @@ exports.generateProgram = function (exp) {
 };
 
 Object.assign(ArrayExp.prototype, {
-  gen() { /* TODO */ },
+  gen() { return `Array(${this.size}).fill(${this.fill})`; },
 });
 
 Object.assign(ArrayType.prototype, {
-  gen() { /* TODO */ },
+  gen() { /* Empty: types don't generate target code */ },
 });
 
 Object.assign(Assignment.prototype, {
@@ -90,7 +91,7 @@ Object.assign(Break.prototype, {
 
 Object.assign(Call.prototype, {
   gen() {
-    return `${jsName(this.callee)}(${this.args.map(a => a.gen()).join(',')})`;
+    return `${javaScriptId(this.callee)}(${this.args.map(a => a.gen()).join(',')})`;
   },
 });
 
@@ -99,7 +100,11 @@ Object.assign(ExpSeq.prototype, {
 });
 
 Object.assign(Field.prototype, {
-  gen() { /* TODO */ },
+  gen() { /* Empty: this is part of a type, and types don't generate target code */ },
+});
+
+Object.assign(FieldBinding.prototype, {
+  gen() { return `${this.id} : ${this.value}`; },
 });
 
 Object.assign(ForExp.prototype, {
@@ -135,7 +140,7 @@ Object.assign(MemberExp.prototype, {
 });
 
 Object.assign(NamedType.prototype, {
-  gen() { /* TODO */ },
+  gen() { /* Empty: types don't generate target code */ },
 });
 
 Object.assign(SubscriptedExp.prototype, {
@@ -155,29 +160,27 @@ Object.assign(Nil.prototype, {
 });
 
 Object.assign(Param.prototype, {
-  gen() { /* TODO */ },
+  gen() { return javaScriptId(this); },
 });
 
 Object.assign(RecordExp.prototype, {
-  gen() { /* TODO */ },
+  gen() { return `{${this.fieldBindings.map(b => b.gen()).join(',')}}`; },
 });
 
 Object.assign(RecordType.prototype, {
-  gen() { /* TODO */ },
+  gen() { /* Empty: types don't generate target code */ },
 });
 
 Object.assign(VarDec.prototype, {
-  gen() {
-    /* TODO */
-  },
+  gen() { return `${javaScriptId(this)} = ${this.init.gen()}`; },
 });
 
 Object.assign(IdExp.prototype, {
-  gen() { return jsName(this); },
+  gen() { return javaScriptId(this); },
 });
 
 Object.assign(TypeDec.prototype, {
-  gen() { /* TODO */ },
+  gen() { /* Empty: types don't generate target code */ },
 });
 
 Object.assign(WhileExp.prototype, {
