@@ -3,9 +3,9 @@ const ohm = require('ohm-js');
 
 const {
   ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field,
-  FieldBinding, ForExp, FunDec, IdExp, IfExp, LetExp, Literal, MemberExp,
+  FieldBinding, ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp,
   NamedType, NegationExp, Nil, Param, RecordExp, RecordType, SubscriptedExp,
-  TypeDec, VarDec, WhileExp,
+  TypeDec, Variable, WhileExp,
 } = require('../ast');
 
 const grammar = ohm.grammar(fs.readFileSync('grammar/tiger.ohm'));
@@ -48,10 +48,10 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     return new RecordType(fieldDecs.ast());
   },
   FunDec(_1, id, _2, params, _4, _5, typeid, _6, body) {
-    return new FunDec(id.ast(), params.ast(), arrayToNullable(typeid.ast()), body.ast());
+    return new Func(id.ast(), params.ast(), arrayToNullable(typeid.ast()), body.ast());
   },
   VarDec(_1, id, _2, typeid, _3, init) {
-    return new VarDec(id.ast(), arrayToNullable(typeid.ast()), init.ast());
+    return new Variable(id.ast(), arrayToNullable(typeid.ast()), init.ast());
   },
   Field(id, _1, typeid) {
     return new Field(id.ast(), typeid.ast());
@@ -80,13 +80,13 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
   Literal_nil(_1) {
     return new Nil();
   },
-  Var_id(id) {
+  Lvalue_id(id) {
     return new IdExp(id.ast());
   },
-  Var_subscripted(array, _1, subscript, _2) {
+  Lvalue_subscripted(array, _1, subscript, _2) {
     return new SubscriptedExp(array.ast(), subscript.ast());
   },
-  Var_field(record, _1, id) {
+  Lvalue_field(record, _1, id) {
     return new MemberExp(record.ast(), id.ast());
   },
   ArrayExp(type, _1, size, _2, _3, fill) {

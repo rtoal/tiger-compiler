@@ -1,6 +1,6 @@
 LetExp {
   decs:
-   [ FunDec {
+   [ Func {
        id: 'addTwo',
        params: [ Param { id: 'x', type: 'int' } ],
        returnType: 'int',

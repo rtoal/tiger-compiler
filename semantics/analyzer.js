@@ -1,8 +1,8 @@
 const {
   ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field,
-  FieldBinding, ForExp, FunDec, IdExp, IfExp, LetExp, Literal, MemberExp,
+  FieldBinding, ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp,
   NamedType, NegationExp, Nil, Param, RecordExp, RecordType, SubscriptedExp,
-  TypeDec, VarDec, WhileExp,
+  TypeDec, Variable, WhileExp,
 } = require('../ast');
 
 const { IntType, StringType, NilType } = require('./builtins');
@@ -54,6 +54,7 @@ Call.prototype.analyze = function (context) {
   check.isFunction(this.callee, 'Attempt to call a non-function');
   this.args = this.args.map(arg => arg.analyze(context));
   check.legalArguments(this.args, this.callee);
+  this.type = this.callee.returnType;
 };
 
 ExpSeq.prototype.analyze = function (context) {
@@ -73,19 +74,20 @@ ForExp.prototype.analyze = function (context) {
   check.isInteger(this.low, 'Low bound in for');
   this.high = this.test.analyze(context);
   check.isInteger(this.high, 'High bound in for');
-  const bodyContext = context.createChildContext();
+  const bodyContext = context.createChildContextForLoop();
   bodyContext.addVariable(this.id);
-  bodyContext.inLoop = true;
   this.body = this.body.analyze(bodyContext);
 };
 
-FunDec.prototype.analyze = function (context) {
+Func.prototype.analyze = function (context) {
   const newContext = context.createChildContextForFunctionBody();
   this.params.forEach(p => p.analyze(newContext));
+  // Add the function before analyzing the body so that we can support recursion
   context.add(this);
   if (this.body) {
     this.body = this.body.analyze(newContext);
   }
+  check.typeCompatibility(this.body, this.returnType, 'Type mismatch in function return');
 };
 
 IdExp.prototype.analyze = function (context) {
@@ -159,8 +161,11 @@ RecordExp.prototype.analyze = function (context) {
 };
 
 RecordType.prototype.analyze = function (context) {
-  // this.fields.forEach(field => field.analyze(context));
-  // this.fields.forEach(...this.)
+  const usedFields = new Set();
+  this.fields.forEach((field) => {
+    check.notDuplicateField(field, usedFields);
+    field.analyze(context);
+  });
 };
 
 SubscriptedExp.prototype.analyze = function (context) {
@@ -175,12 +180,13 @@ TypeDec.prototype.analyze = function (context) {
   context.add(this);
 };
 
-VarDec.prototype.analyze = function (context) {
+Variable.prototype.analyze = function (context) {
   this.init = this.init.analyze(context);
   if (this.type) {
     this.type = this.type.analyze(context);
     check.typeCompatibility(this.init, this.type);
   } else {
+    // Yay! type inference!
     this.type = this.init.type;
   }
   context.add(this);
@@ -189,5 +195,5 @@ VarDec.prototype.analyze = function (context) {
 WhileExp.prototype.analyze = function (context) {
   this.test = this.test.analyze(context);
   check.isInteger(this.test, 'Test in while');
-  this.body = this.body.analyze(context.with({ inLoop: true }));
+  this.body = this.body.analyze(context.createChildContextForLoop());
 };

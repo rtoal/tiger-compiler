@@ -1,5 +1,7 @@
-const { ArrayType, FunDec } = require('../ast');
-const { IntType, StringType } = require('./builtins');
+const { ArrayType, Func } = require('../ast');
+const {
+  IntType, StringType, NilType, RecordType,
+} = require('./builtins');
 
 function doCheck(condition, message) {
   if (!condition) {
@@ -7,10 +9,12 @@ function doCheck(condition, message) {
   }
 }
 module.exports = {
+  // Is this type an array type?
   isArrayType(type) {
-    doCheck(type === ArrayType, 'Not an array type');
+    doCheck(type.constructor === ArrayType, 'Not an array type');
   },
 
+  // Is the type of this expression an array type?
   isArray(expression) {
     doCheck(expression.type.constructor === ArrayType, 'Not an array');
   },
@@ -31,17 +35,17 @@ module.exports = {
   },
 
   isFunction(value) {
-    doCheck(value.constructor === FunDec, 'Not a string');
+    doCheck(value.constructor === Func, 'Not a string');
   },
 
+  // Are two types exactly the same?
   typeEquality(type1, type2) {
-    return type1 === type2;
+    doCheck(type1 === type2, 'Types must match exactly');
   },
 
+  // Can we assign expression to a variable/param/field of type type?
   typeCompatibility(expression, type) {
-    // Tiger does not have complex rules for type compatibility,
-    // though other languages do.
-    return expression.type === type;
+    doCheck((expression.type === NilType && type.constructor === RecordType)
+      || (expression.type === type));
   },
-
 };

@@ -57,7 +57,7 @@ class ForExp {
   }
 }
 
-class FunDec {
+class Func {
   constructor(id, params, returnType, body) {
     Object.assign(this, {
       id, params, returnType, body,
@@ -140,7 +140,7 @@ class TypeDec {
   }
 }
 
-class VarDec {
+class Variable {
   constructor(id, type, init) {
     Object.assign(this, { id, type, init });
   }
@@ -154,7 +154,7 @@ class WhileExp {
 
 module.exports = {
   ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field,
-  FieldBinding, ForExp, FunDec, IdExp, IfExp, LetExp, Literal, MemberExp,
+  FieldBinding, ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp,
   NamedType, NegationExp, Nil, Param, RecordExp, RecordType, SubscriptedExp,
-  TypeDec, VarDec, WhileExp,
+  TypeDec, Variable, WhileExp,
 };

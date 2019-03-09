@@ -4,7 +4,7 @@ Tiger {
                | "if" Exp "then" Exp ("else" Exp)?      -- if
                | "while" Exp "do" Exp                   -- while
                | "for" id ":=" Exp "to" Exp "do" Exp    -- for
-               | Var ":=" Exp                           -- assign
+               | Lvalue ":=" Exp                        -- assign
                | "break"                                -- break
                | Exp1
   Dec          = TypeDec | VarDec | FunDec
@@ -31,12 +31,12 @@ Tiger {
                | Exp6
   Exp6         = "-" Exp7                               -- negation
                | Exp7
-  Exp7         = Call | ArrayExp | RecordExp | ExpSeq | Literal | Var
+  Exp7         = Call | ArrayExp | RecordExp | ExpSeq | Literal | Lvalue
   Literal      = intlit
                | stringlit
                | "nil"                                  -- nil
-  Var          = Var "[" Exp "]"                        -- subscripted
-               | Var "." id                             -- field
+  Lvalue       = Lvalue "[" Exp "]"                     -- subscripted
+               | Lvalue "." id                          -- field
                | id                                     -- id
   ArrayExp     = typeId "[" Exp "]" "of" Exp
   RecordExp    = typeId "{" ListOf<FieldBind, ","> "}"
