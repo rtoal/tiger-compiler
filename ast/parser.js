@@ -2,10 +2,9 @@ const fs = require('fs');
 const ohm = require('ohm-js');
 
 const {
-  ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field,
-  FieldBinding, ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp,
-  NamedType, NegationExp, Nil, Param, RecordExp, RecordType, SubscriptedExp,
-  TypeDec, Variable, WhileExp,
+  ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field, FieldBinding,
+  ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param,
+  RecordExp, RecordType, SubscriptedExp, TypeDec, Variable, WhileExp,
 } = require('../ast');
 
 const grammar = ohm.grammar(fs.readFileSync('grammar/tiger.ohm'));
@@ -37,9 +36,6 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
   },
   TypeDec(_1, id, _2, type) {
     return new TypeDec(id.ast(), type.ast());
-  },
-  Type_named(id) {
-    return new NamedType(id.ast());
   },
   ArrayType(_1, _2, id) {
     return new ArrayType(id.ast());

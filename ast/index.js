@@ -66,8 +66,8 @@ class Func {
 }
 
 class IdExp {
-  constructor(id) {
-    Object.assign(this, { id });
+  constructor(ref) {
+    Object.assign(this, { ref });
   }
 }
 
@@ -95,12 +95,6 @@ class MemberExp {
   }
 }
 
-class NamedType {
-  constructor(id) {
-    Object.assign(this, { id });
-  }
-}
-
 class NegationExp {
   constructor(operand) {
     Object.assign(this, { operand });
@@ -113,6 +107,12 @@ class Nil {
 class Param {
   constructor(id, type) {
     Object.assign(this, { id, type });
+  }
+}
+
+class PrimitiveType {
+  constructor(name) {
+    Object.assign(this, { name });
   }
 }
 
@@ -153,8 +153,7 @@ class WhileExp {
 }
 
 module.exports = {
-  ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field,
-  FieldBinding, ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp,
-  NamedType, NegationExp, Nil, Param, RecordExp, RecordType, SubscriptedExp,
-  TypeDec, Variable, WhileExp,
+  ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field, FieldBinding,
+  ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param,
+  PrimitiveType, RecordExp, RecordType, SubscriptedExp, TypeDec, Variable, WhileExp,
 };

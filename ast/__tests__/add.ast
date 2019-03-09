@@ -5,7 +5,10 @@ LetExp {
        params: [ Param { id: 'x', type: 'int' } ],
        returnType: 'int',
        body:
-        BinaryExp { op: '+', left: IdExp { id: 'x' }, right: Literal { value: 2 } } } ],
+        BinaryExp {
+          op: '+',
+          left: IdExp { ref: 'x' },
+          right: Literal { value: 2 } } } ],
   body:
    [ Call {
        callee: 'addTwo',

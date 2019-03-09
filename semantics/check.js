@@ -38,6 +38,10 @@ module.exports = {
     doCheck(value.constructor === Func, 'Not a string');
   },
 
+  isFieldOfRecord(id, record) {
+    doCheck(record.type.fields.find(field => id === field.id), `No such field: ${id}`);
+  },
+
   // Are two types exactly the same?
   typeEquality(type1, type2) {
     doCheck(type1 === type2, 'Types must match exactly');
@@ -47,5 +51,9 @@ module.exports = {
   typeCompatibility(expression, type) {
     doCheck((expression.type === NilType && type.constructor === RecordType)
       || (expression.type === type));
+  },
+
+  notDuplicateField(field, usedFields) {
+    doCheck(!usedFields.has(field), `Field ${field} already declared`);
   },
 };

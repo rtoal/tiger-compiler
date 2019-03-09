@@ -1,8 +1,8 @@
-const { Func, Param, NamedType } = require('../ast');
+const { Func, Param, PrimitiveType } = require('../ast');
 
-const IntType = new NamedType('int');
-const StringType = new NamedType('string');
-class NilType {}
+const IntType = new PrimitiveType('int');
+const StringType = new PrimitiveType('string');
+const NilType = new PrimitiveType('string');
 
 const standardFunctions = [
   new Func('print', [new Param('s', StringType)]),
