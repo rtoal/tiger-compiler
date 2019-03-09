@@ -21,7 +21,7 @@ const {
 } = require('../ast');
 
 const Context = require('../semantics/context');
-const { IntType } = require('../semantics/builtins');
+const { StringType } = require('../semantics/builtins');
 
 function makeOp(op) {
   return { '=': '===', '<>': '!==' }[op] || op;
@@ -133,7 +133,7 @@ Object.assign(LetExp.prototype, {
 });
 
 Object.assign(Literal.prototype, {
-  gen() { return this.type === IntType ? `${this.value}` : `"${this.value}"`; },
+  gen() { return this.type === StringType ? `"${this.value}"` : `${this.value}`; },
 });
 
 Object.assign(MemberExp.prototype, {
