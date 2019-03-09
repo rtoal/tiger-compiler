@@ -56,4 +56,8 @@ module.exports = {
   notDuplicateField(field, usedFields) {
     doCheck(!usedFields.has(field), `Field ${field} already declared`);
   },
+
+  legalArguments() {
+    /* TODO */
+  },
 };

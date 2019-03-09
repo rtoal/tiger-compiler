@@ -151,8 +151,8 @@ RecordExp.prototype.analyze = function (context) {
 RecordType.prototype.analyze = function (context) {
   const usedFields = new Set();
   this.fields.forEach((field) => {
-    check.notDuplicateField(field.name, usedFields);
-    usedFields.add(field.name);
+    check.notDuplicateField(field.id, usedFields);
+    usedFields.add(field.id);
     field.analyze(context);
   });
 };
@@ -181,7 +181,7 @@ TypeDec.prototype.analyze = function (context) {
 Variable.prototype.analyze = function (context) {
   this.init.analyze(context);
   if (this.type) {
-    this.type = this.type.analyze(context);
+    this.type = context.lookupType(this.type);
     check.typeCompatibility(this.init, this.type);
   } else {
     // Yay! type inference!

@@ -27,6 +27,7 @@ const fs = require('fs');
 const util = require('util');
 const yargs = require('yargs');
 const parse = require('./ast/parser');
+const Context = require('./semantics/context');
 require('./backend/javascript-generator');
 
 // If compiling from a string, return the AST, IR, or compiled code as a string.
@@ -35,7 +36,7 @@ function compile(sourceCode, { astOnly, frontEndOnly, shouldOptimize }) {
   if (astOnly) {
     return util.inspect(program, { depth: null });
   }
-  program.analyze();
+  program.analyze(Context.INITIAL);
   if (shouldOptimize) {
     program = program.optimize();
   }

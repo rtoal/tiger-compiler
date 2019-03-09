@@ -14,10 +14,9 @@
 const prettyJs = require('pretty-js');
 
 const {
-  ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field,
-  FieldBinding, ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp,
-  NamedType, NegationExp, Nil, Param, RecordExp, RecordType, SubscriptedExp,
-  TypeDec, Variable, WhileExp,
+  ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field, FieldBinding,
+  ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param,
+  PrimitiveType, RecordExp, RecordType, SubscriptedExp, TypeDec, Variable, WhileExp,
 } = require('../ast');
 
 const { Context } = require('../semantics/context');
@@ -139,10 +138,6 @@ Object.assign(MemberExp.prototype, {
   gen() { /* TODO */ },
 });
 
-Object.assign(NamedType.prototype, {
-  gen() { /* Empty: types don't generate target code */ },
-});
-
 Object.assign(SubscriptedExp.prototype, {
   gen() {
     const base = this.variable.gen();
@@ -161,6 +156,10 @@ Object.assign(Nil.prototype, {
 
 Object.assign(Param.prototype, {
   gen() { return javaScriptId(this); },
+});
+
+Object.assign(PrimitiveType.prototype, {
+  gen() { /* Empty: types don't generate target code */ },
 });
 
 Object.assign(RecordExp.prototype, {
