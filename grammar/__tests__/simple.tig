@@ -4,7 +4,7 @@ let
   type point = { x: int, y: int }
   var x : int := 2
   function f(z: int, s: string): int =
-    chr(z + size(s))
+    z + size(s)
 in
-  print(concat(f(x, "hello"), "\n"))
+  print(concat(f(chr(x), "hello"), "\n"))
 end

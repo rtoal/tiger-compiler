@@ -39,8 +39,8 @@ Tiger {
                | Lvalue "." id                          -- field
                | id                                     -- id
   ArrayExp     = typeId "[" Exp "]" "of" Exp
-  RecordExp    = typeId "{" ListOf<FieldBind, ","> "}"
-  FieldBind    = id "=" Exp
+  RecordExp    = typeId "{" ListOf<Binding, ","> "}"
+  Binding      = id "=" Exp
   Call         = id "(" ListOf<Exp, ","> ")"
   ExpSeq       = "(" ListOf<Exp, ";"> ")"
   keyword      = ("array" | "break" | "do" | "else" | "end" | "for" | "function"

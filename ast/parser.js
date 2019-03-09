@@ -2,7 +2,7 @@ const fs = require('fs');
 const ohm = require('ohm-js');
 
 const {
-  ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field, FieldBinding,
+  ArrayExp, ArrayType, Assignment, BinaryExp, Binding, Break, Call, ExpSeq, Field,
   ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param,
   RecordExp, RecordType, SubscriptedExp, TypeDec, Variable, WhileExp,
 } = require('../ast');
@@ -91,8 +91,8 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
   RecordExp(type, _1, fields, _2) {
     return new RecordExp(type.ast(), fields.ast());
   },
-  FieldBind(id, _1, value) {
-    return new FieldBinding(id.ast(), value.ast());
+  Binding(id, _1, value) {
+    return new Binding(id.ast(), value.ast());
   },
   Call(callee, _1, args, _2) {
     return new Call(callee.ast(), args.ast());

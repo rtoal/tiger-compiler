@@ -1,25 +1,27 @@
 /*
  * Translation to JavaScript
  *
- * Requiring this module adds a gen() method to each of the AST classes.
- * Nothing is actually exported from this module.
+ * Requiring this module adds a gen() method to each of the AST classes. It
+ * exports a function that generates a complete, pretty-printed JavaScript
+ * program for a Tiger expression, bundling the translation of the Tiger
+ * standard library with the expression's translation.
  *
- * Each gen() method returns a fragment of JavaScript. The gen() method on
- * the program class pretty-prints the complete JavaScript code.
+ * Each gen() method returns a fragment of JavaScript.
  *
- *   require('./backend/javascript-generator');
- *   program.gen();
+ *   const generate = require('./backend/javascript-generator');
+ *   generate(tigerExpression);
  */
 
 const prettyJs = require('pretty-js');
 
 const {
-  ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field, FieldBinding,
+  ArrayExp, ArrayType, Assignment, BinaryExp, Binding, Break, Call, ExpSeq, Field,
   ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param,
   PrimitiveType, RecordExp, RecordType, SubscriptedExp, TypeDec, Variable, WhileExp,
 } = require('../ast');
 
-const { Context } = require('../semantics/context');
+const Context = require('../semantics/context');
+const { IntType } = require('../semantics/builtins');
 
 function makeOp(op) {
   return { '=': '===', '<>': '!==' }[op] || op;
@@ -43,26 +45,26 @@ const javaScriptId = (() => {
 
 function generateLibraryFunctions() {
   function generateLibraryStub(name, params, body) {
-    const entity = Context.INITIAL.declarations[name];
+    const entity = Context.INITIAL.valueMap[name];
     return `function ${javaScriptId(entity)}(${params}) {${body}}`;
   }
   return [
-    generateLibraryStub('print', '_', 'console.log(_);'),
-    generateLibraryStub('flush', '_', 'return undefined;'),
-    generateLibraryStub('getchar', '_', 'throw new Error("getchar not implemented");'),
-    generateLibraryStub('ord', 's', 'return String.fromCharCode(s);'),
-    generateLibraryStub('char', 's', 'return s.charCodeAt(0);'),
-    generateLibraryStub('size', 's', 'return (s).length;'),
-    generateLibraryStub('substring', 's, i, j', 'return (s).substr(i, n);'),
+    generateLibraryStub('print', 's', 'console.log(s);'),
+    generateLibraryStub('flush', '', 'return undefined;'),
+    generateLibraryStub('getchar', '', 'throw new Error("getchar not implemented");'),
+    generateLibraryStub('ord', 's', 'return s.charCodeAt(0);'),
+    generateLibraryStub('chr', 'i', 'return String.fromCharCode(i);'),
+    generateLibraryStub('size', 's', 'return s.length;'),
+    generateLibraryStub('substring', 's, i, j', 'return s.substr(i, n);'),
     generateLibraryStub('concat', 's, t', 'return s.concat(t);'),
-    generateLibraryStub('not', 's', 'return (!s);'),
+    generateLibraryStub('not', 's', 'return !s;'),
     generateLibraryStub('exit', 'code', 'process.exit(code)'),
   ].join('');
 }
 
-exports.generateProgram = function (exp) {
+module.exports = function (exp) {
   const libraryFunctions = generateLibraryFunctions();
-  const program = `${libraryFunctions} (()=>${exp.gen()})();`;
+  const program = `${libraryFunctions} ${exp.gen()}`;
   return prettyJs(program, { indent: '  ' });
 };
 
@@ -84,6 +86,10 @@ Object.assign(BinaryExp.prototype, {
   gen() { return `(${this.left.gen()} ${makeOp(this.op)} ${this.right.gen()})`; },
 });
 
+Object.assign(Binding.prototype, {
+  gen() { return `${this.id} : ${this.value}`; },
+});
+
 Object.assign(Break.prototype, {
   gen() { return 'break'; },
 });
@@ -100,10 +106,6 @@ Object.assign(ExpSeq.prototype, {
 
 Object.assign(Field.prototype, {
   gen() { /* Empty: this is part of a type, and types don't generate target code */ },
-});
-
-Object.assign(FieldBinding.prototype, {
-  gen() { return `${this.id} : ${this.value}`; },
 });
 
 Object.assign(ForExp.prototype, {
@@ -127,11 +129,11 @@ Object.assign(IfExp.prototype, {
 });
 
 Object.assign(LetExp.prototype, {
-  gen() { /* TODO */ },
+  gen() { return `{ ${this.decs.map(d => d.gen())} ${this.body.map(e => e.gen())} }`; },
 });
 
 Object.assign(Literal.prototype, {
-  gen() { return `${this.value}`; },
+  gen() { return this.type === IntType ? `${this.value}` : `"${this.value}"`; },
 });
 
 Object.assign(MemberExp.prototype, {
@@ -171,7 +173,7 @@ Object.assign(RecordType.prototype, {
 });
 
 Object.assign(Variable.prototype, {
-  gen() { return `${javaScriptId(this)} = ${this.init.gen()}`; },
+  gen() { return `let ${javaScriptId(this)} = ${this.init.gen()}`; },
 });
 
 Object.assign(IdExp.prototype, {

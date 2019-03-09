@@ -1,5 +1,5 @@
 const {
-  ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field, FieldBinding,
+  ArrayExp, ArrayType, Assignment, BinaryExp, Binding, Break, Call, ExpSeq, Field,
   ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param,
   RecordExp, RecordType, SubscriptedExp, TypeDec, Variable, WhileExp,
 } = require('../ast');
@@ -47,6 +47,10 @@ BinaryExp.prototype.analyze = function (context) {
   this.type = IntType;
 };
 
+Binding.prototype.analyze = function (context) {
+  this.value.analyze(context);
+};
+
 Call.prototype.analyze = function (context) {
   this.callee = context.lookupValue(this.callee);
   check.isFunction(this.callee, 'Attempt to call a non-function');
@@ -66,10 +70,6 @@ Field.prototype.analyze = function (context) {
   this.type = context.lookupType(this.type);
 };
 
-FieldBinding.prototype.analyze = function (context) {
-  this.value.analyze(context);
-};
-
 ForExp.prototype.analyze = function (context) {
   this.low.analyze(context);
   check.isInteger(this.low, 'Low bound in for');
@@ -85,12 +85,14 @@ Func.prototype.analyze = function (context) {
   this.params.forEach(p => p.analyze(newContext));
   // Add the function before analyzing the body so that we can support recursion
   context.add(this);
-  this.body = this.body.analyze(newContext);
+  this.body.analyze(newContext);
+  this.returnType = context.lookupType(this.returnType);
   check.typeCompatibility(this.body, this.returnType, 'Type mismatch in function return');
 };
 
 IdExp.prototype.analyze = function (context) {
   this.ref = context.lookupValue(this.ref);
+  this.type = this.ref.type;
 };
 
 IfExp.prototype.analyze = function (context) {
@@ -174,7 +176,7 @@ SubscriptedExp.prototype.analyze = function (context) {
 };
 
 TypeDec.prototype.analyze = function (context) {
-  this.type = this.type.analyze(context);
+  this.type.analyze(context);
   context.addType(this);
 };
 

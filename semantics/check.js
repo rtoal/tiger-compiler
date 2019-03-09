@@ -1,3 +1,4 @@
+const util = require('util');
 const { ArrayType, Func } = require('../ast');
 const {
   IntType, StringType, NilType, RecordType,
@@ -49,8 +50,11 @@ module.exports = {
 
   // Can we assign expression to a variable/param/field of type type?
   typeCompatibility(expression, type) {
-    doCheck((expression.type === NilType && type.constructor === RecordType)
-      || (expression.type === type));
+    doCheck(
+      (expression.type === NilType && type.constructor === RecordType)
+      || (expression.type === type),
+      `Expression of type ${util.format(expression.type)} not compatible with type ${util.format(type)}`,
+    );
   },
 
   notDuplicateField(field, usedFields) {

@@ -28,7 +28,7 @@ const util = require('util');
 const yargs = require('yargs');
 const parse = require('./ast/parser');
 const Context = require('./semantics/context');
-require('./backend/javascript-generator');
+const generateProgram = require('./backend/javascript-generator');
 
 // If compiling from a string, return the AST, IR, or compiled code as a string.
 function compile(sourceCode, { astOnly, frontEndOnly, shouldOptimize }) {
@@ -43,7 +43,7 @@ function compile(sourceCode, { astOnly, frontEndOnly, shouldOptimize }) {
   if (frontEndOnly) {
     return util.inspect(program, { depth: null });
   }
-  return program.gen();
+  return generateProgram(program);
 }
 
 // If compiling from a file, write to standard output.
@@ -60,7 +60,7 @@ function compileFile(filename, options) {
 module.exports = { compile, compileFile };
 
 // If running as a script, we have a lot of command line processing to do. The source
-// program will come from the file who name is given as the command line argument.
+// program will come from the file whose name is given as the command line argument.
 if (require.main === module) {
   const { argv } = yargs.usage('$0 [-a] [-o] [-i] filename')
     .boolean(['a', 'o', 'i'])

@@ -22,6 +22,12 @@ class BinaryExp {
   }
 }
 
+class Binding {
+  constructor(id, value) {
+    Object.assign(this, { id, value });
+  }
+}
+
 class Break {
 }
 
@@ -40,12 +46,6 @@ class ExpSeq {
 class Field {
   constructor(id, type) {
     Object.assign(this, { id, type });
-  }
-}
-
-class FieldBinding {
-  constructor(id, value) {
-    Object.assign(this, { id, value });
   }
 }
 
@@ -153,7 +153,7 @@ class WhileExp {
 }
 
 module.exports = {
-  ArrayExp, ArrayType, Assignment, BinaryExp, Break, Call, ExpSeq, Field, FieldBinding,
+  ArrayExp, ArrayType, Assignment, BinaryExp, Binding, Break, Call, ExpSeq, Field,
   ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param,
   PrimitiveType, RecordExp, RecordType, SubscriptedExp, TypeDec, Variable, WhileExp,
 };
