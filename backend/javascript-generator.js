@@ -58,7 +58,7 @@ function generateLibraryFunctions() {
     generateLibraryStub('substring', 's, i, j', 'return s.substr(i, n);'),
     generateLibraryStub('concat', 's, t', 'return s.concat(t);'),
     generateLibraryStub('not', 's', 'return !s;'),
-    generateLibraryStub('exit', 'code', 'process.exit(code)'),
+    generateLibraryStub('exit', 'code', 'process.exit(code);'),
   ].join('');
 }
 
@@ -68,124 +68,117 @@ module.exports = function (exp) {
   return prettyJs(program, { indent: '  ' });
 };
 
-Object.assign(ArrayExp.prototype, {
-  gen() { return `Array(${this.size}).fill(${this.fill})`; },
-});
+ArrayExp.prototype.gen = function () {
+  return `Array(${this.size}).fill(${this.fill})`;
+};
 
-Object.assign(ArrayType.prototype, {
-  gen() { /* Empty: types don't generate target code */ },
-});
+ArrayType.prototype.gen = function () {
+  /* Empty: types don't generate target code */
+};
 
-Object.assign(Assignment.prototype, {
-  gen() {
-    return `${this.target} = ${this.source}`;
-  },
-});
+Assignment.prototype.gen = function () {
+  return `${this.target} = ${this.source}`;
+};
 
-Object.assign(BinaryExp.prototype, {
-  gen() { return `(${this.left.gen()} ${makeOp(this.op)} ${this.right.gen()})`; },
-});
+BinaryExp.prototype.gen = function () {
+  return `(${this.left.gen()} ${makeOp(this.op)} ${this.right.gen()})`;
+};
 
-Object.assign(Binding.prototype, {
-  gen() { return `${this.id} : ${this.value}`; },
-});
+Binding.prototype.gen = function () {
+  return `${this.id} : ${this.value}`;
+};
 
-Object.assign(Break.prototype, {
-  gen() { return 'break'; },
-});
+Break.prototype.gen = function () {
+  return 'break';
+};
 
-Object.assign(Call.prototype, {
-  gen() {
-    return `${javaScriptId(this.callee)}(${this.args.map(a => a.gen()).join(',')})`;
-  },
-});
+Call.prototype.gen = function () {
+  return `${javaScriptId(this.callee)}(${this.args.map(a => a.gen()).join(',')})`;
+};
 
-Object.assign(ExpSeq.prototype, {
-  gen() { return this.exps.map(s => `${s.gen()};`).join(''); },
-});
+ExpSeq.prototype.gen = function () {
+  return this.exps.map(s => `${s.gen()};`).join('');
+};
 
-Object.assign(Field.prototype, {
-  gen() { /* Empty: this is part of a type, and types don't generate target code */ },
-});
+Field.prototype.gen = function () {
+  /* Empty: this is part of a type, and types don't generate target code */
+};
 
-Object.assign(ForExp.prototype, {
-  gen() { /* TODO */ },
-});
+ForExp.prototype.gen = function () {
+  const i = javaScriptId(this.index);
+  const low = this.low.gen();
+  const hi = javaScriptId(new Variable('hi'));
+  const body = this.body.gen();
+  return `${hi} = ${this.high.gen()}; for (let ${i} = ${low}; ${i} <= ${hi}; ${i}++) {${body}}`;
+};
 
-Object.assign(Func.prototype, {
-  gen() { /* TODO */ },
-});
+Func.prototype.gen = function () {
+  const name = javaScriptId(this);
+  const params = this.params.map(javaScriptId);
+  return `function ${name} (${params.join(',')}) {${this.body.gen()}}`;
+};
 
-Object.assign(IdExp.prototype, {
-  gen() { return this.id.gen(); },
-});
+IdExp.prototype.gen = function () {
+  return javaScriptId(this.ref);
+};
 
-Object.assign(IfExp.prototype, {
-  gen() {
-    return `if (${test.gen()}) ${this.consequent()} ${
-      this.alternate ? this.alternate.gen() : ''
-    }`;
-  },
-});
+IfExp.prototype.gen = function () {
+  const thenPart = this.consequent;
+  const elsePart = this.alternate ? this.alternate.gen() : '';
+  return `if (${test.gen()}) ${thenPart} ${elsePart}`;
+};
 
-Object.assign(LetExp.prototype, {
-  gen() { return `{ ${this.decs.map(d => d.gen())} ${this.body.map(e => e.gen())} }`; },
-});
+LetExp.prototype.gen = function () {
+  const decs = this.decs.filter(d => d.constructor !== TypeDec);
+  return `{ ${decs.map(d => d.gen()).join(';')} ${this.body.map(e => e.gen())} }`;
+};
 
-Object.assign(Literal.prototype, {
-  gen() { return this.type === StringType ? `"${this.value}"` : `${this.value}`; },
-});
+Literal.prototype.gen = function () {
+  return this.type === StringType ? `"${this.value}"` : `${this.value}`;
+};
 
-Object.assign(MemberExp.prototype, {
-  gen() { /* TODO */ },
-});
+MemberExp.prototype.gen = function () {
+  return `${this.record.gen()}.${javaScriptId(this)}`;
+};
 
-Object.assign(SubscriptedExp.prototype, {
-  gen() {
-    const base = this.variable.gen();
-    const subscript = this.subscript.gen();
-    return `${base}[${subscript}]`;
-  },
-});
+SubscriptedExp.prototype.gen = function () {
+  const base = this.variable.gen();
+  const subscript = this.subscript.gen();
+  return `${base}[${subscript}]`;
+};
 
-Object.assign(NegationExp.prototype, {
-  gen() { return `(- (${this.operand.gen()}))`; },
-});
+NegationExp.prototype.gen = function () {
+  return `(- (${this.operand.gen()}))`;
+};
 
-Object.assign(Nil.prototype, {
-  gen() { return 'null'; },
-});
+Nil.prototype.gen = function () {
+  return 'null';
+};
 
-Object.assign(Param.prototype, {
-  gen() { return javaScriptId(this); },
-});
+Param.prototype.gen = function () {
+  return javaScriptId(this);
+};
 
-Object.assign(PrimitiveType.prototype, {
-  gen() { /* Empty: types don't generate target code */ },
-});
+PrimitiveType.prototype.gen = function () {
+  /* Empty: types don't generate target code */
+};
 
-Object.assign(RecordExp.prototype, {
-  gen() { return `{${this.fieldBindings.map(b => b.gen()).join(',')}}`; },
-});
+RecordExp.prototype.gen = function () {
+  return `{${this.fieldBindings.map(b => b.gen()).join(',')}}`;
+};
 
-Object.assign(RecordType.prototype, {
-  gen() { /* Empty: types don't generate target code */ },
-});
+RecordType.prototype.gen = function () {
+  /* Empty: types don't generate target code */
+};
 
-Object.assign(Variable.prototype, {
-  gen() { return `let ${javaScriptId(this)} = ${this.init.gen()}`; },
-});
+Variable.prototype.gen = function () {
+  return `let ${javaScriptId(this)} = ${this.init.gen()}`;
+};
 
-Object.assign(IdExp.prototype, {
-  gen() { return javaScriptId(this); },
-});
+TypeDec.prototype.gen = function () {
+  /* Empty: types don't generate target code */
+};
 
-Object.assign(TypeDec.prototype, {
-  gen() { /* Empty: types don't generate target code */ },
-});
-
-Object.assign(WhileExp.prototype, {
-  gen() {
-    return `while (${this.test.gen()}) { ${this.body.gen()} }`;
-  },
-});
+WhileExp.prototype.gen = function () {
+  return `while (${this.test.gen()}) { ${this.body.gen()} }`;
+};
