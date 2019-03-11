@@ -76,7 +76,8 @@ ForExp.prototype.analyze = function (context) {
   this.high.analyze(context);
   check.isInteger(this.high, 'High bound in for');
   const bodyContext = context.createChildContextForLoop();
-  bodyContext.add(this.id);
+  this.index = new Variable(this.index, this.low.type);
+  bodyContext.add(this.index);
   this.body.analyze(bodyContext);
 };
 

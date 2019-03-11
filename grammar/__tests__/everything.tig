@@ -20,5 +20,5 @@ let
 in
   dogs[1] := "Sparky";
   for i := 1 to 10 do
-    print(fib(20))
+    print(fib(i))
 end
