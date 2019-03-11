@@ -76,7 +76,7 @@ class Context {
     if (typeDec.id in this.typeMap) {
       throw new Error(`Type ${typeDec.id} already declared in this scope`);
     }
-    this.valueMap[typeDec.id] = typeDec.type;
+    this.typeMap[typeDec.id] = typeDec.type;
   }
 
   // Returns the type entity bound to the given identifier, starting from this

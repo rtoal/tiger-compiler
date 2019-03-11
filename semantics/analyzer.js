@@ -22,9 +22,9 @@ ArrayType.prototype.analyze = function (context) {
 };
 
 Assignment.prototype.analyze = function (context) {
+  this.source.analyze(context);
   this.target.analyze(context);
-  this.target.analyze(context);
-  check.typeCompatibility(this.source, this.targetType);
+  check.typeCompatibility(this.source, this.target.type);
 };
 
 Break.prototype.analyze = function (context) {
@@ -76,7 +76,7 @@ ForExp.prototype.analyze = function (context) {
   this.high.analyze(context);
   check.isInteger(this.high, 'High bound in for');
   const bodyContext = context.createChildContextForLoop();
-  bodyContext.addVariable(this.id);
+  bodyContext.add(this.id);
   this.body.analyze(bodyContext);
 };
 
@@ -108,7 +108,9 @@ LetExp.prototype.analyze = function (context) {
   const newContext = context.createChildContextForBlock();
   this.decs.map(d => d.analyze(newContext));
   this.body.map(e => e.analyze(newContext));
-  this.type = this.body.type;
+  if (this.body.length > 0) {
+    this.type = this.body[this.body.length - 1].type;
+  }
 };
 
 Literal.prototype.analyze = function () {
@@ -120,7 +122,8 @@ Literal.prototype.analyze = function () {
 };
 
 MemberExp.prototype.analyze = function (context) {
-  this.record = this.record.analyze(context);
+  this.record.analyze(context);
+  check.isRecord(this.record);
   const field = this.record.type.getFieldForId(this.id);
   this.type = field.type;
 };
@@ -141,10 +144,10 @@ Param.prototype.analyze = function (context) {
 };
 
 RecordExp.prototype.analyze = function (context) {
-  this.record = this.record.analyze(context);
-  check.isRecord(this.record);
-  this.record.fieldBindings.forEach((binding) => {
-    const field = this.record.type.getFieldForId(binding.id);
+  this.type = context.lookupType(this.type);
+  check.isRecordType(this.type);
+  this.bindings.forEach((binding) => {
+    const field = this.type.getFieldForId(binding.id);
     binding.analyze(context);
     check.typeCompatibility(binding.value, field.type);
   });
@@ -172,7 +175,7 @@ SubscriptedExp.prototype.analyze = function (context) {
   check.isArray(this.array);
   this.subscript.analyze(context);
   check.isInteger(this.subscript);
-  this.type = this.array.memberType;
+  this.type = this.array.type.memberType;
 };
 
 TypeDec.prototype.analyze = function (context) {

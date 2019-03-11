@@ -10,11 +10,15 @@ let
       var b: int := 1
       var t := 0  /* Tiger does not have parallel assignment */
     in
-      while n > 0 do
-        (t := a; a := b; b := t + b; n := n - 1);
+      /* while n > 0 do
+        (t := a; a := b; b := t + b; n := n - 1);  */
       a
     end
+  var c: Circle := Circle {y = 2, x = 5, color = "blue"}
+  type list = array of string
+  var dogs: list := list [3] of "woof"
 in
+  dogs[1] := "Sparky";
   for i := 1 to 10 do
     print(fib(20))
 end

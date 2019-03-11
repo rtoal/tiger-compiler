@@ -117,8 +117,8 @@ class PrimitiveType {
 }
 
 class RecordExp {
-  constructor(type, fieldBindings) {
-    Object.assign(this, { type, fieldBindings });
+  constructor(type, bindings) {
+    Object.assign(this, { type, bindings });
   }
 }
 

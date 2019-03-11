@@ -69,7 +69,7 @@ module.exports = function (exp) {
 };
 
 ArrayExp.prototype.gen = function () {
-  return `Array(${this.size}).fill(${this.fill})`;
+  return `Array(${this.size.gen()}).fill(${this.fill.gen()})`;
 };
 
 ArrayType.prototype.gen = function () {
@@ -77,7 +77,7 @@ ArrayType.prototype.gen = function () {
 };
 
 Assignment.prototype.gen = function () {
-  return `${this.target} = ${this.source}`;
+  return `${this.target.gen()} = ${this.source.gen()}`;
 };
 
 BinaryExp.prototype.gen = function () {
@@ -85,7 +85,7 @@ BinaryExp.prototype.gen = function () {
 };
 
 Binding.prototype.gen = function () {
-  return `${this.id} : ${this.value}`;
+  return `${this.id} : ${this.value.gen()}`;
 };
 
 Break.prototype.gen = function () {
@@ -130,11 +130,11 @@ IfExp.prototype.gen = function () {
 
 LetExp.prototype.gen = function () {
   const decs = this.decs.filter(d => d.constructor !== TypeDec);
-  return `{ ${decs.map(d => d.gen()).join(';')} ${this.body.map(e => e.gen())} }`;
+  return `{ ${decs.map(d => d.gen()).join(';')} ; ${this.body.map(e => e.gen()).join(';')} }`;
 };
 
 Literal.prototype.gen = function () {
-  return this.type === StringType ? `"${this.value}"` : `${this.value}`;
+  return this.type === StringType ? `"${this.value}"` : this.value;
 };
 
 MemberExp.prototype.gen = function () {
@@ -142,7 +142,7 @@ MemberExp.prototype.gen = function () {
 };
 
 SubscriptedExp.prototype.gen = function () {
-  const base = this.variable.gen();
+  const base = this.array.gen();
   const subscript = this.subscript.gen();
   return `${base}[${subscript}]`;
 };
@@ -164,7 +164,7 @@ PrimitiveType.prototype.gen = function () {
 };
 
 RecordExp.prototype.gen = function () {
-  return `{${this.fieldBindings.map(b => b.gen()).join(',')}}`;
+  return `{${this.bindings.map(b => b.gen()).join(',')}}`;
 };
 
 RecordType.prototype.gen = function () {

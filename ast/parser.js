@@ -88,8 +88,8 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
   ArrayExp(type, _1, size, _2, _3, fill) {
     return new ArrayExp(type.ast(), size.ast(), fill.ast());
   },
-  RecordExp(type, _1, fields, _2) {
-    return new RecordExp(type.ast(), fields.ast());
+  RecordExp(type, _1, bindings, _2) {
+    return new RecordExp(type.ast(), bindings.ast());
   },
   Binding(id, _1, value) {
     return new Binding(id.ast(), value.ast());

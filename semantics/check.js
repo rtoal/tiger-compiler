@@ -1,8 +1,6 @@
 const util = require('util');
-const { ArrayType, Func } = require('../ast');
-const {
-  IntType, StringType, NilType, RecordType,
-} = require('./builtins');
+const { ArrayType, Func, RecordType } = require('../ast');
+const { IntType, StringType, NilType } = require('./builtins');
 
 function doCheck(condition, message) {
   if (!condition) {
@@ -15,9 +13,17 @@ module.exports = {
     doCheck(type.constructor === ArrayType, 'Not an array type');
   },
 
+  isRecordType(type) {
+    doCheck(type.constructor === RecordType, 'Not a record type');
+  },
+
   // Is the type of this expression an array type?
   isArray(expression) {
     doCheck(expression.type.constructor === ArrayType, 'Not an array');
+  },
+
+  isRecord(expression) {
+    doCheck(expression.type.constructor === RecordType, 'Not a record');
   },
 
   isInteger(expression) {
