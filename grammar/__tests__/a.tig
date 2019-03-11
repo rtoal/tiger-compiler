@@ -1,6 +1,0 @@
-let
-  type list = {x:int}
-  var y: list := list{x=1}
-in
-  print(list{x=1})
-end
