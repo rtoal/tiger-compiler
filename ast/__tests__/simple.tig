@@ -5,7 +5,7 @@ let
   var x : int := 2
   function f(z: int, s: string): int =
     z + size(s) - x
-  var p: point := point { x = 2, y = 8 }
+  var p:= point { x = 2, y = 8 }   /* Type inference!! */
 in
   /* It’s a Tiger program */
   for i := 0 to x do

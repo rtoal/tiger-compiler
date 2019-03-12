@@ -25,7 +25,7 @@ LetExp {
           right: IdExp { ref: 'x' } } },
      Variable {
        id: 'p',
-       type: 'point',
+       type: null,
        init:
         RecordExp {
           type: 'point',
