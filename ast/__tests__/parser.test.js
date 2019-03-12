@@ -9,19 +9,38 @@ const fs = require('fs');
 const util = require('util');
 const parse = require('../parser');
 
+const {
+  ArrayExp, ArrayType, Assignment, BinaryExp, Binding, Break, Call, ExpSeq, Field,
+  ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param,
+  RecordExp, RecordType, SubscriptedExp, TypeDec, Variable, WhileExp,
+} = require('../ast');
+
+const fixture = {
+  hello: [
+    'print("Hello, world\n")',
+    new Call('print', new Literal('Hello, world\\n')),
+  ],
+
+  add: [
+    `let
+      function addTwo(x: int): int = x + 2
+    in
+      addTwo(ord("dog"))
+    end`,
+    new LetExp(
+      [new Func('addTwo', [new Param('x', 'int')], 'int',
+        new BinaryExp('+', new IdExp('x'), new Literal(2)))],
+      [new Call('addTwo', new Call('ord', [new Literal('dog')]))],
+    ),
+  ],
+};
+
+
 describe('The parser', () => {
-  fs.readdirSync(__dirname).forEach((name) => {
-    if (name.endsWith('.tig')) {
-      test(`produces the correct AST for ${name}`, (done) => {
-        fs.readFile(`${__dirname}/${name}`, 'utf-8', (err, input) => {
-          const ast = parse(input);
-          const astText = util.inspect(ast, { depth: null });
-          fs.readFile(`${__dirname}/${name.slice(0, -3)}ast`, 'utf-8', (_err, expected) => {
-            expect(astText).toEqual(expected.trim());
-            done();
-          });
-        });
-      });
-    }
+  Object.entries(fixture).forEach(([name, [source, expected]]) => {
+    test(`produces the correct AST for ${name}`, (done) => {
+      expect(parse(source).toEqual(expected));
+      done();
+    });
   });
 });
