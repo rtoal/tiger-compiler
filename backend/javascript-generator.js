@@ -1,10 +1,11 @@
 /*
  * Translation to JavaScript
  *
- * Requiring this module adds a gen() method to each of the AST classes. It
- * exports a function that generates a complete, pretty-printed JavaScript
- * program for a Tiger expression, bundling the translation of the Tiger
- * standard library with the expression's translation.
+ * Requiring this module adds a gen() method to each of the AST classes, except
+ * for types, and fields, which don’t figure into code generation. It exports a
+ * function that generates a complete, pretty-printed JavaScript program for a
+ * Tiger expression, bundling the translation of the Tiger standard library with
+ * the expression's translation.
  *
  * Each gen() method returns a fragment of JavaScript.
  *
@@ -15,9 +16,9 @@
 const prettyJs = require('pretty-js');
 
 const {
-  ArrayExp, ArrayType, Assignment, BinaryExp, Binding, Break, Call, ExpSeq, Field,
-  ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param,
-  PrimitiveType, RecordExp, RecordType, SubscriptedExp, TypeDec, Variable, WhileExp,
+  ArrayExp, Assignment, BinaryExp, Binding, Break, Call, ExpSeq, ForExp, Func,
+  IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param, RecordExp,
+  SubscriptedExp, TypeDec, Variable, WhileExp,
 } = require('../ast');
 
 const Context = require('../semantics/context');
@@ -27,11 +28,10 @@ function makeOp(op) {
   return { '=': '===', '<>': '!==' }[op] || op;
 }
 
-// javaScriptId(e) takes any PlainScript object with an id property, such as a
-// Variable, Parameter, or FunctionDeclaration, and produces a JavaScript
-// name by appending a unique identifying suffix, such as '_1' or '_503'.
-// It uses a cache so it can return the same exact string each time it is
-// called with a particular entity.
+// javaScriptId(e) takes any Tiger object with an id property, such as a Variable,
+// Param, or Func, and produces a JavaScript name by appending a unique identifying
+// suffix, such as '_1' or '_503'. It uses a cache so it can return the same exact
+// string each time it is called with a particular entity.
 const javaScriptId = (() => {
   let lastId = 0;
   const map = new Map();
@@ -72,10 +72,6 @@ ArrayExp.prototype.gen = function () {
   return `Array(${this.size.gen()}).fill(${this.fill.gen()})`;
 };
 
-ArrayType.prototype.gen = function () {
-  /* Empty: types don't generate target code */
-};
-
 Assignment.prototype.gen = function () {
   return `${this.target.gen()} = ${this.source.gen()}`;
 };
@@ -98,10 +94,6 @@ Call.prototype.gen = function () {
 
 ExpSeq.prototype.gen = function () {
   return this.exps.map(s => `${s.gen()};`).join('');
-};
-
-Field.prototype.gen = function () {
-  /* Empty: this is part of a type, and types don't generate target code */
 };
 
 ForExp.prototype.gen = function () {
@@ -159,24 +151,12 @@ Param.prototype.gen = function () {
   return javaScriptId(this);
 };
 
-PrimitiveType.prototype.gen = function () {
-  /* Empty: types don't generate target code */
-};
-
 RecordExp.prototype.gen = function () {
   return `{${this.bindings.map(b => b.gen()).join(',')}}`;
 };
 
-RecordType.prototype.gen = function () {
-  /* Empty: types don't generate target code */
-};
-
 Variable.prototype.gen = function () {
   return `let ${javaScriptId(this)} = ${this.init.gen()}`;
-};
-
-TypeDec.prototype.gen = function () {
-  /* Empty: types don't generate target code */
 };
 
 WhileExp.prototype.gen = function () {
