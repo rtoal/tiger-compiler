@@ -1,30 +1,45 @@
 /*
- * Grammar Tests
+ * Grammar Error Tests
  *
- * These tests check that we’ve constructed our grammar correctly: they
- * invoke the syntax checker for the programs you’ve stored in this folder,
- * then expects the syntax checker to return true or false, as appropriate.
+ * These tests check that our grammar accepts a program that features all of
+ * syntactic forms of the language.
  */
 
-const fs = require('fs');
-const parse = require('../syntax-checker');
+const syntaxCheck = require('../syntax-checker');
+
+const program = `
+let
+  type Circle = {
+    x: int,
+    y: int,
+    color: string
+  }
+  function fib(n: int): int =
+    let
+      var a: int := 0
+      var b: int := 1
+      var t := 0  /* Tiger does not have parallel assignment */
+    in
+      while n > 0 do
+        (t := a; a := b; b := t + b; n := n - 1);
+      "abc$%π\\n\\\\\\u{41}";
+      a := if 1 then 1;
+      b := if 0 then 2 else let var x := 1 in x end;
+      b
+    end
+  var c: Circle := Circle {y = 2, x = 5<3&2<>1, color = "blue"}
+  type list = array of string
+  var dogs: list := list [3] of "woof"
+in
+  dogs[1] := "Sparky";
+  for i := 1 to 10 do
+    print(fib(i) & 0 | 1 + 0 * 1 - 0 / 1)
+end
+`;
 
 describe('The syntax checker', () => {
-  fs.readdirSync(__dirname).forEach((name) => {
-    if (name.endsWith('.error.tig')) {
-      test(`detects a syntax error in ${name}`, (done) => {
-        fs.readFile(`${__dirname}/${name}`, 'utf-8', (err, input) => {
-          expect(parse(input)).toBe(false);
-          done();
-        });
-      });
-    } else if (name.endsWith('.tig')) {
-      test(`matches the program ${name}`, (done) => {
-        fs.readFile(`${__dirname}/${name}`, 'utf-8', (err, input) => {
-          expect(parse(input)).toBe(true);
-          done();
-        });
-      });
-    }
+  test('accepts the mega program will all syntactic forms', (done) => {
+    expect(syntaxCheck(program)).toBe(true);
+    done();
   });
 });
