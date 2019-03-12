@@ -1,5 +1,5 @@
 /*
- * Grammar Error Tests
+ * Grammar Success Test
  *
  * These tests check that our grammar accepts a program that features all of
  * syntactic forms of the language.
