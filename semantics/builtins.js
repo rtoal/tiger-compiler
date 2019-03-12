@@ -24,6 +24,4 @@ const standardFunctions = [
   new Func('exit', [new Param('code', IntType)]),
 ];
 
-module.exports = {
-  IntType, StringType, NilType, standardFunctions,
-};
+module.exports = { IntType, StringType, NilType, standardFunctions };
