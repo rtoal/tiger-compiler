@@ -51,17 +51,13 @@ class Field {
 
 class ForExp {
   constructor(index, low, high, body) {
-    Object.assign(this, {
-      index, low, high, body,
-    });
+    Object.assign(this, { index, low, high, body });
   }
 }
 
 class Func {
   constructor(id, params, returnType, body) {
-    Object.assign(this, {
-      id, params, returnType, body,
-    });
+    Object.assign(this, { id, params, returnType, body });
   }
 }
 

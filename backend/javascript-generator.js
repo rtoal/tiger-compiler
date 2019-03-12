@@ -25,7 +25,7 @@ const Context = require('../semantics/context');
 const { StringType } = require('../semantics/builtins');
 
 function makeOp(op) {
-  return { '=': '===', '<>': '!==' }[op] || op;
+  return { '=': '===', '<>': '!==', '&': '&&', '|': '||' }[op] || op;
 }
 
 // javaScriptId(e) takes any Tiger object with an id property, such as a Variable,
@@ -134,9 +134,7 @@ MemberExp.prototype.gen = function () {
 };
 
 SubscriptedExp.prototype.gen = function () {
-  const base = this.array.gen();
-  const subscript = this.subscript.gen();
-  return `${base}[${subscript}]`;
+  return `${this.array.gen()}[${this.subscript.gen()}]`;
 };
 
 NegationExp.prototype.gen = function () {

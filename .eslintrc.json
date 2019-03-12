@@ -16,6 +16,7 @@
     "rules": {
         "object-property-newline": "off",
         "func-names": "off",
-        "no-console": "off"
+        "no-console": "off",
+        "object-curly-newline": ["error", {"multiline": true, "minProperties": 5}]
     }
 }
