@@ -14,7 +14,7 @@ ArrayExp.prototype.analyze = function (context) {
   this.size.analyze(context);
   check.isInteger(this.size);
   this.fill.analyze(context);
-  check.typeCompatibility(this.fill, this.type.memberType);
+  check.isAssignableTo(this.fill, this.type.memberType);
 };
 
 ArrayType.prototype.analyze = function (context) {
@@ -24,7 +24,7 @@ ArrayType.prototype.analyze = function (context) {
 Assignment.prototype.analyze = function (context) {
   this.source.analyze(context);
   this.target.analyze(context);
-  check.typeCompatibility(this.source, this.target.type);
+  check.isAssignableTo(this.source, this.target.type);
 };
 
 Break.prototype.analyze = function (context) {
@@ -38,11 +38,11 @@ BinaryExp.prototype.analyze = function (context) {
     check.isInteger(this.left);
     check.isInteger(this.right);
   } else if (/<=?|>=?/.test(this.op)) {
-    check.typeEquality(this.left, this.right);
+    check.typesAreTheSame(this.left, this.right);
     check.isIntegerOrString(this.left);
     check.isIntegerOrString(this.right);
   } else {
-    check.typeEquality(this.left, this.right);
+    check.typesAreTheSame(this.left, this.right);
   }
   this.type = IntType;
 };
@@ -55,7 +55,7 @@ Call.prototype.analyze = function (context) {
   this.callee = context.lookupValue(this.callee);
   check.isFunction(this.callee, 'Attempt to call a non-function');
   this.args.forEach(arg => arg.analyze(context));
-  check.legalArguments(this.args, this.callee);
+  check.legalArguments(this.args, this.callee.params);
   this.type = this.callee.returnType;
 };
 
@@ -81,14 +81,19 @@ ForExp.prototype.analyze = function (context) {
   this.body.analyze(bodyContext);
 };
 
-Func.prototype.analyze = function (context) {
-  const newContext = context.createChildContextForFunctionBody();
-  this.params.forEach(p => p.analyze(newContext));
-  // Add the function before analyzing the body so that we can support recursion
-  context.add(this);
-  this.body.analyze(newContext);
+// Function analysis is broken up into two parts in order to support (nutual)
+// recursion. First we have to do semantic analysis just on the signature
+// (including the return type). This is so other functions that may be declared
+// before this one have calls to this one checked.
+Func.prototype.analyzeSignature = function (context) {
+  this.bodyContext = context.createChildContextForFunctionBody();
+  this.params.forEach(p => p.analyze(this.bodyContext));
   this.returnType = context.lookupType(this.returnType);
-  check.typeCompatibility(this.body, this.returnType, 'Type mismatch in function return');
+};
+
+Func.prototype.analyze = function () {
+  this.body.analyze(this.bodyContext);
+  check.isAssignableTo(this.body, this.returnType, 'Type mismatch in function return');
 };
 
 IdExp.prototype.analyze = function (context) {
@@ -107,7 +112,11 @@ IfExp.prototype.analyze = function (context) {
 
 LetExp.prototype.analyze = function (context) {
   const newContext = context.createChildContextForBlock();
+  this.decs.filter(d => d.constructor === TypeDec).map(d => newContext.addType(d));
+  this.decs.filter(d => d.constructor === Func).map(d => newContext.add(d));
+  this.decs.filter(d => d.constructor === Func).map(d => d.analyzeSignature(newContext));
   this.decs.map(d => d.analyze(newContext));
+  check.noRecursiveTypeCyclesWithoutRecordTypes(this.decs);
   this.body.map(e => e.analyze(newContext));
   if (this.body.length > 0) {
     this.type = this.body[this.body.length - 1].type;
@@ -150,14 +159,14 @@ RecordExp.prototype.analyze = function (context) {
   this.bindings.forEach((binding) => {
     const field = this.type.getFieldForId(binding.id);
     binding.analyze(context);
-    check.typeCompatibility(binding.value, field.type);
+    check.isAssignableTo(binding.value, field.type);
   });
 };
 
 RecordType.prototype.analyze = function (context) {
   const usedFields = new Set();
   this.fields.forEach((field) => {
-    check.notDuplicateField(field.id, usedFields);
+    check.fieldHasNotBeenUsed(field.id, usedFields);
     usedFields.add(field.id);
     field.analyze(context);
   });
@@ -181,14 +190,13 @@ SubscriptedExp.prototype.analyze = function (context) {
 
 TypeDec.prototype.analyze = function (context) {
   this.type.analyze(context);
-  context.addType(this);
 };
 
 Variable.prototype.analyze = function (context) {
   this.init.analyze(context);
   if (this.type) {
     this.type = context.lookupType(this.type);
-    check.typeCompatibility(this.init, this.type);
+    check.isAssignableTo(this.init, this.type);
   } else {
     // Yay! type inference!
     this.type = this.init.type;

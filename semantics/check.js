@@ -50,12 +50,12 @@ module.exports = {
   },
 
   // Are two types exactly the same?
-  typeEquality(type1, type2) {
+  typesAreTheSame(type1, type2) {
     doCheck(type1 === type2, 'Types must match exactly');
   },
 
   // Can we assign expression to a variable/param/field of type type?
-  typeCompatibility(expression, type) {
+  isAssignableTo(expression, type) {
     doCheck(
       (expression.type === NilType && type.constructor === RecordType)
       || (expression.type === type),
@@ -63,11 +63,21 @@ module.exports = {
     );
   },
 
-  notDuplicateField(field, usedFields) {
+  fieldHasNotBeenUsed(field, usedFields) {
     doCheck(!usedFields.has(field), `Field ${field} already declared`);
   },
 
-  legalArguments() {
+  // Same number of args and params; all types compatible
+  legalArguments(args, params) {
+    doCheck(args.length === params.length,
+      `Expected ${this.params.length} args in call, got ${this.args.length}`);
+    args.forEach((arg, i) => {
+      this.isAssignableTo(arg, params[i].type);
+    });
+  },
+
+  // If there is a cycle in types, they must go through a record
+  noRecursiveTypeCyclesWithoutRecordTypes() {
     /* TODO */
   },
 };
