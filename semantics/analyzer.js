@@ -25,6 +25,7 @@ Assignment.prototype.analyze = function (context) {
   this.source.analyze(context);
   this.target.analyze(context);
   check.isAssignableTo(this.source, this.target.type);
+  check.isNotReadOnly(this.target);
 };
 
 Break.prototype.analyze = function (context) {
@@ -77,6 +78,7 @@ ForExp.prototype.analyze = function (context) {
   check.isInteger(this.high, 'High bound in for');
   const bodyContext = context.createChildContextForLoop();
   this.index = new Variable(this.index, this.low.type);
+  this.index.readOnly = true;
   bodyContext.add(this.index);
   this.body.analyze(bodyContext);
 };

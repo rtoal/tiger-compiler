@@ -16,7 +16,12 @@ const errors = [
   ['types do not match in equality test', '2 = "dog"'],
   ['types do not match in inequality test', '2 <> "dog"'],
   ['use of undeclared variable', 'x := 1'],
+  ['undeclared because in other scope', 'let var x := 1 in let var y := 2 in 1 end; y end'],
   ['redeclaration of variable', 'let var x := 1 var x := 2 in nil end'],
+  ['writing to for loop index', 'for i := 0 to 10 do i := 3'],
+  ['too many function arguments', 'char(1, 2, 3)'],
+  ['too few function arguments', 'concat("x")'],
+  ['wrong type of function argument', 'ord(8)'],
   // TODO: We need dozens more here....
 ];
 

@@ -1,5 +1,5 @@
 const util = require('util');
-const { ArrayType, Func, RecordType } = require('../ast');
+const { ArrayType, Func, RecordType, IdExp } = require('../ast');
 const { IntType, StringType, NilType } = require('./builtins');
 
 function doCheck(condition, message) {
@@ -63,6 +63,13 @@ module.exports = {
     );
   },
 
+  isNotReadOnly(lvalue) {
+    doCheck(
+      !(lvalue.constructor === IdExp && lvalue.ref.readOnly),
+      'Assignment to read-only variable',
+    );
+  },
+
   fieldHasNotBeenUsed(field, usedFields) {
     doCheck(!usedFields.has(field), `Field ${field} already declared`);
   },
@@ -70,10 +77,8 @@ module.exports = {
   // Same number of args and params; all types compatible
   legalArguments(args, params) {
     doCheck(args.length === params.length,
-      `Expected ${this.params.length} args in call, got ${this.args.length}`);
-    args.forEach((arg, i) => {
-      this.isAssignableTo(arg, params[i].type);
-    });
+      `Expected ${params.length} args in call, got ${args.length}`);
+    args.forEach((arg, i) => this.isAssignableTo(arg, params[i].type));
   },
 
   // If there is a cycle in types, they must go through a record
