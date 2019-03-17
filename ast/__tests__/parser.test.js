@@ -3,8 +3,8 @@
  *
  * These tests check that the parser produces the AST that we expect.
  *
- * Note we are only checking ASTs here, so our test programs can, and probably will,
- * have semantic errors.
+ * Note we are only checking syntactic forms here, so our test programs
+ * may have semantic errors.
  */
 
 const parse = require('../parser');

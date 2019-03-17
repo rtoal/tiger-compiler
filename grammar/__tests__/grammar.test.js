@@ -7,7 +7,7 @@
 
 const syntaxCheck = require('../syntax-checker');
 
-const program = `
+const program = String.raw`
 let
   type Circle = {
     x: int,
@@ -22,7 +22,7 @@ let
     in
       while n > 0 do
         (t := a; a := b; b := t + b; n := n - 1);
-      "abc$%π\\n\\\\\\u{41}";
+      "abc$%π\n\\\u{41}";
       a := if 1 then b := 1;
       b := if 0 then 2 else let var x := 1 in x end;
       b
