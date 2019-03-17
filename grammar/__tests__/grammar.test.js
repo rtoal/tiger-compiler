@@ -38,7 +38,7 @@ end
 `;
 
 describe('The syntax checker', () => {
-  test('accepts the mega program will all syntactic forms', (done) => {
+  test('accepts the mega program with all syntactic forms', (done) => {
     expect(syntaxCheck(program)).toBe(true);
     done();
   });

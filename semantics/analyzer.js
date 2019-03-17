@@ -38,11 +38,11 @@ BinaryExp.prototype.analyze = function (context) {
     check.isInteger(this.left);
     check.isInteger(this.right);
   } else if (/<=?|>=?/.test(this.op)) {
-    check.typesAreTheSame(this.left, this.right);
+    check.expressionsHaveTheSameType(this.left, this.right);
     check.isIntegerOrString(this.left);
     check.isIntegerOrString(this.right);
   } else {
-    check.typesAreTheSame(this.left, this.right);
+    check.expressionsHaveTheSameType(this.left, this.right);
   }
   this.type = IntType;
 };

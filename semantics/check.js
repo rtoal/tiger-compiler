@@ -50,8 +50,8 @@ module.exports = {
   },
 
   // Are two types exactly the same?
-  typesAreTheSame(type1, type2) {
-    doCheck(type1 === type2, 'Types must match exactly');
+  expressionsHaveTheSameType(e1, e2) {
+    doCheck(e1.type === e2.type, 'Types must match exactly');
   },
 
   // Can we assign expression to a variable/param/field of type type?
