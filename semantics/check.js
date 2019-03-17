@@ -42,7 +42,7 @@ module.exports = {
   },
 
   isFunction(value) {
-    doCheck(value.constructor === Func, 'Not a string');
+    doCheck(value.constructor === Func, 'Not a function');
   },
 
   isFieldOfRecord(id, record) {
