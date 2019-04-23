@@ -2,7 +2,7 @@ const { Func, Param, PrimitiveType } = require('../ast');
 
 const IntType = new PrimitiveType('int');
 const StringType = new PrimitiveType('string');
-const NilType = new PrimitiveType('string');
+const NilType = new PrimitiveType('nil');
 
 const standardFunctions = [
   new Func('print', [new Param('s', StringType)]),
