@@ -7,6 +7,7 @@ function doCheck(condition, message) {
     throw new Error(message);
   }
 }
+
 module.exports = {
   // Is this type an array type?
   isArrayType(type) {
