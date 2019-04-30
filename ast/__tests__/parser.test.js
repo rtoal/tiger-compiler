@@ -100,4 +100,9 @@ describe('The parser', () => {
       done();
     });
   });
+
+  test('throws an exception on a syntax error', (done) => {
+    expect(() => parse('as$df^&%*$&')).toThrow();
+    done();
+  });
 });
