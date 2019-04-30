@@ -50,8 +50,6 @@ function generateLibraryFunctions() {
   }
   return [
     generateLibraryStub('print', 's', 'console.log(s);'),
-    generateLibraryStub('flush', '', 'return undefined;'),
-    generateLibraryStub('getchar', '', 'throw new Error("getchar not implemented");'),
     generateLibraryStub('ord', 's', 'return s.charCodeAt(0);'),
     generateLibraryStub('chr', 'i', 'return String.fromCharCode(i);'),
     generateLibraryStub('size', 's', 'return s.length;'),
