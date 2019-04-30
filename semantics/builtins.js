@@ -6,8 +6,6 @@ const NilType = new PrimitiveType('nil');
 
 const standardFunctions = [
   new Func('print', [new Param('s', StringType)]),
-  new Func('flush', []),
-  new Func('getchar', [], StringType),
   new Func('ord', [new Param('s', StringType)], IntType),
   new Func('chr', [new Param('x', IntType)], StringType),
   new Func('size', [new Param('s', StringType)], IntType),
