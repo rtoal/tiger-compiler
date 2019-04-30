@@ -9,7 +9,7 @@ const { IntType, StringType, NilType } = require('./builtins');
 const check = require('./check');
 
 ArrayExp.prototype.analyze = function (context) {
-  this.type = context.lookupType(this.type);
+  this.type = context.lookup(this.type);
   check.isArrayType(this.type);
   this.size.analyze(context);
   check.isInteger(this.size);
@@ -18,7 +18,7 @@ ArrayExp.prototype.analyze = function (context) {
 };
 
 ArrayType.prototype.analyze = function (context) {
-  this.memberType = context.lookupType(this.memberType);
+  this.memberType = context.lookup(this.memberType);
 };
 
 Assignment.prototype.analyze = function (context) {
@@ -53,7 +53,7 @@ Binding.prototype.analyze = function (context) {
 };
 
 Call.prototype.analyze = function (context) {
-  this.callee = context.lookupValue(this.callee);
+  this.callee = context.lookup(this.callee);
   check.isFunction(this.callee, 'Attempt to call a non-function');
   this.args.forEach(arg => arg.analyze(context));
   check.legalArguments(this.args, this.callee.params);
@@ -68,7 +68,7 @@ ExpSeq.prototype.analyze = function (context) {
 };
 
 Field.prototype.analyze = function (context) {
-  this.type = context.lookupType(this.type);
+  this.type = context.lookup(this.type);
 };
 
 ForExp.prototype.analyze = function (context) {
@@ -90,7 +90,7 @@ ForExp.prototype.analyze = function (context) {
 Func.prototype.analyzeSignature = function (context) {
   this.bodyContext = context.createChildContextForFunctionBody();
   this.params.forEach(p => p.analyze(this.bodyContext));
-  this.returnType = context.lookupType(this.returnType);
+  this.returnType = context.lookup(this.returnType);
 };
 
 Func.prototype.analyze = function () {
@@ -99,7 +99,7 @@ Func.prototype.analyze = function () {
 };
 
 IdExp.prototype.analyze = function (context) {
-  this.ref = context.lookupValue(this.ref);
+  this.ref = context.lookup(this.ref);
   this.type = this.ref.type;
 };
 
@@ -114,7 +114,7 @@ IfExp.prototype.analyze = function (context) {
 
 LetExp.prototype.analyze = function (context) {
   const newContext = context.createChildContextForBlock();
-  this.decs.filter(d => d.constructor === TypeDec).map(d => newContext.addType(d));
+  this.decs.filter(d => d.constructor === TypeDec).map(d => newContext.add(d));
   this.decs.filter(d => d.constructor === Func).map(d => newContext.add(d));
   this.decs.filter(d => d.constructor === Func).map(d => d.analyzeSignature(newContext));
   this.decs.map(d => d.analyze(newContext));
@@ -151,12 +151,12 @@ Nil.prototype.analyze = function () {
 };
 
 Param.prototype.analyze = function (context) {
-  this.type = context.lookupType(this.type);
+  this.type = context.lookup(this.type);
   context.add(this);
 };
 
 RecordExp.prototype.analyze = function (context) {
-  this.type = context.lookupType(this.type);
+  this.type = context.lookup(this.type);
   check.isRecordType(this.type);
   this.bindings.forEach((binding) => {
     const field = this.type.getFieldForId(binding.id);
@@ -167,6 +167,7 @@ RecordExp.prototype.analyze = function (context) {
 
 RecordType.prototype.analyze = function (context) {
   const usedFields = new Set();
+  console.log(this);
   this.fields.forEach((field) => {
     check.fieldHasNotBeenUsed(field.id, usedFields);
     usedFields.add(field.id);
@@ -197,7 +198,7 @@ TypeDec.prototype.analyze = function (context) {
 Variable.prototype.analyze = function (context) {
   this.init.analyze(context);
   if (this.type) {
-    this.type = context.lookupType(this.type);
+    this.type = context.lookup(this.type);
     check.isAssignableTo(this.init, this.type);
   } else {
     // Yay! type inference!

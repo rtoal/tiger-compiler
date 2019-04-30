@@ -107,8 +107,8 @@ class Param {
 }
 
 class PrimitiveType {
-  constructor(name) {
-    Object.assign(this, { name });
+  constructor(id) {
+    Object.assign(this, { id });
   }
 }
 
