@@ -9,5 +9,5 @@ let
 in
   /* It’s a Tiger program */
   for i := 0 to x do
-    print(concat(f(chr(p.y), "hello"), "\u{1f937}\n"))
+    print(concat(chr(f(p.y, "hello")), "\u{1f937}\n"))
 end
