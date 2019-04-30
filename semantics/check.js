@@ -31,6 +31,10 @@ module.exports = {
     doCheck(expression.type === IntType, 'Not an integer');
   },
 
+  mustNotHaveAType(expression) {
+    doCheck(!expression.type, 'Expression must not have a type');
+  },
+
   isIntegerOrString(expression) {
     doCheck(
       expression.type === IntType || expression.type === StringType,

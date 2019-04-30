@@ -24,9 +24,9 @@ let
 in
   dogs[1] := "Sparky";
   if "a" < "b" then print("");
-  if c = c then print("");
+  if c = c then print("") else print("z");
   while 1 do break;
-  /* c.x := if 1 then 2 else 3; */
+  c.x := if 1 then 2 else 3;
   for i := 1 to (9; 10) do
     print(concat(chr(-2), "xyz"))
     /*

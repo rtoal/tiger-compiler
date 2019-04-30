@@ -109,7 +109,13 @@ IfExp.prototype.analyze = function (context) {
   this.consequent.analyze(context);
   if (this.alternate) {
     this.alternate.analyze(context);
+    if (this.consequent.type) {
+      check.expressionsHaveTheSameType(this.consequent, this.alternate);
+    } else {
+      check.mustNotHaveAType(this.alternate);
+    }
   }
+  this.type = this.consequent.type;
 };
 
 LetExp.prototype.analyze = function (context) {
@@ -176,7 +182,7 @@ RecordType.prototype.analyze = function (context) {
 
 RecordType.prototype.getFieldForId = function (id) {
   const field = this.fields.find(f => f.id === id);
-  if (field === null) {
+  if (!field) {
     throw new Error('No such field');
   }
   return field;
