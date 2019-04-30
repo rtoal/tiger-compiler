@@ -96,6 +96,7 @@ Func.prototype.analyzeSignature = function (context) {
 Func.prototype.analyze = function () {
   this.body.analyze(this.bodyContext);
   check.isAssignableTo(this.body, this.returnType, 'Type mismatch in function return');
+  delete this.bodyContext; // This was only temporary, delete to keep output clean.
 };
 
 IdExp.prototype.analyze = function (context) {
