@@ -26,7 +26,7 @@ const fixture = {
     new WhileExp(new Literal(0), new ExpSeq([new Break(), new Break()])),
   ],
 
-  for_and_if: [
+  forAndIf: [
     String.raw`for i := 0 to 9 do if i then i := 100`,
     new ForExp(
       'i',
@@ -36,7 +36,7 @@ const fixture = {
     ),
   ],
 
-  simple_function: [
+  simpleFunction: [
     String.raw`let
       function addTwo(x: int): int = x + 2
     in
@@ -47,6 +47,11 @@ const fixture = {
         new BinaryExp('+', new IdExp('x'), new Literal(2)))],
       [new Call('addTwo', [new Call('ord', [new Literal('dog')])])],
     ),
+  ],
+
+  emptyParameters: [
+    String.raw`f()`,
+    new Call('f', []),
   ],
 
   arrays: [
@@ -67,7 +72,7 @@ const fixture = {
       var p: point := nil
     in
       print(point{x=1, y=8});
-      p.y
+      p.y * 3 | 5
     end`,
     new LetExp(
       [
@@ -78,7 +83,11 @@ const fixture = {
         new Call('print', [new RecordExp(
           'point', [new Binding('x', new Literal(1)), new Binding('y', new Literal(8))],
         )]),
-        new MemberExp(new IdExp('p'), 'y'),
+        new BinaryExp(
+          '|',
+          new BinaryExp('*', new MemberExp(new IdExp('p'), 'y'), new Literal(3)),
+          new Literal(5),
+        ),
       ],
     ),
   ],
