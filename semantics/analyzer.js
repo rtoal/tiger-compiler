@@ -115,8 +115,8 @@ IfExp.prototype.analyze = function (context) {
 LetExp.prototype.analyze = function (context) {
   const newContext = context.createChildContextForBlock();
   this.decs.filter(d => d.constructor === TypeDec).map(d => newContext.add(d));
-  this.decs.filter(d => d.constructor === Func).map(d => newContext.add(d));
   this.decs.filter(d => d.constructor === Func).map(d => d.analyzeSignature(newContext));
+  this.decs.filter(d => d.constructor === Func).map(d => newContext.add(d));
   this.decs.map(d => d.analyze(newContext));
   check.noRecursiveTypeCyclesWithoutRecordTypes(this.decs);
   this.body.map(e => e.analyze(newContext));
@@ -167,7 +167,6 @@ RecordExp.prototype.analyze = function (context) {
 
 RecordType.prototype.analyze = function (context) {
   const usedFields = new Set();
-  console.log(this);
   this.fields.forEach((field) => {
     check.fieldHasNotBeenUsed(field.id, usedFields);
     usedFields.add(field.id);
