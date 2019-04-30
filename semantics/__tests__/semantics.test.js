@@ -23,17 +23,13 @@ let
   function successor(x: int): int = x + 1
 in
   dogs[1] := "Sparky";
-  if "a" < "b" then print("");
+  if "a" < "b" then ();
   if c = c then print("") else print("z");
   while 1 do break;
   c.x := if 1 then 2 else 3;
   for i := 1 to (9; 10) do
-    print(concat(chr(-2), "xyz"))
-    /*
-     *
-     * NEEDS A ZILLION MORE THINGS
-     *
-     */
+    print(concat(chr(-2), "xyz"));
+  let var x := 1 in end
 end
 `;
 

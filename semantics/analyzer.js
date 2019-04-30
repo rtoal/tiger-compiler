@@ -134,7 +134,7 @@ LetExp.prototype.analyze = function (context) {
 Literal.prototype.analyze = function () {
   if (typeof this.value === 'number') {
     this.type = IntType;
-  } else if (typeof this.value === 'string') {
+  } else {
     this.type = StringType;
   }
 };
