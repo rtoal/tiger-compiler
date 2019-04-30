@@ -20,7 +20,7 @@ const errors = [
   ['undeclared because in other scope', 'let var x := 1 in let var y := 2 in 1 end; y end'],
   ['redeclaration of variable', 'let var x := 1 var x := 2 in nil end'],
   ['type mismatch in assignment', 'let var x := 1 var y := "abc" in x := y end'],
-  ['writing to for loop index', 'for i := 0 to 10 do i := 3'],
+  ['writing to (readonly) for loop index', 'for i := 0 to 10 do i := 3'],
   ['too many function arguments', 'chr(1, 2, 3)'],
   ['too few function arguments', 'concat("x")'],
   ['wrong type of function argument', 'ord(8)'],
@@ -30,7 +30,7 @@ const errors = [
   ['subscript of nonarray', 'let var x := 3 in x[0] end'],
   ['call of nonfunction', 'let var x := 1 in x(5) end'],
   ['non integer subscript', 'let type list = array of int var a := list [1] of 0 in a["x"] end'],
-  // TODO: We need dozens more here....
+  // Might need more here, depending on your test coverage report
 ];
 
 describe('The semantic analyzer', () => {

@@ -84,6 +84,6 @@ module.exports = {
 
   // If there is a cycle in types, they must go through a record
   noRecursiveTypeCyclesWithoutRecordTypes() {
-    /* TODO */
+    /* TODO - not looking forward to this one */
   },
 };

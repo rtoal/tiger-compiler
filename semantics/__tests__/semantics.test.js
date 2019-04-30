@@ -8,8 +8,7 @@
 const parse = require('../../ast/parser');
 const Context = require('../context');
 
-// TODO THIS IS NOT DONE!!!!!
-
+// This is just enough to complete 100% analyzer coverage, but feels light to me.
 const program = String.raw`
 let
   type Circle = {
@@ -18,6 +17,7 @@ let
     color: string
   }
   type list = array of string
+  var two := successor(1) /* Test forward use, yay */
   var c: Circle := Circle {y = 2, x = 5<3&2<>1, color = "blue"}
   var dogs: list := list [3] of "woof"
   function successor(x: int): int = x + 1
