@@ -45,7 +45,7 @@ const javaScriptId = (() => {
 
 function generateLibraryFunctions() {
   function generateLibraryStub(name, params, body) {
-    const entity = Context.INITIAL.valueMap[name];
+    const entity = Context.INITIAL.locals.get(name);
     return `function ${javaScriptId(entity)}(${params}) {${body}}`;
   }
   return [
