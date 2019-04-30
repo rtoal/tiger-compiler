@@ -105,7 +105,13 @@ ForExp.prototype.gen = function () {
 Func.prototype.gen = function () {
   const name = javaScriptId(this);
   const params = this.params.map(javaScriptId);
-  return `function ${name} (${params.join(',')}) {${this.body.gen()}}`;
+  let body = this.body.gen();
+  if (this.body.type) {
+    // "Void" functions do not have a JS return, others do
+    body = `return ${body};`;
+    // TODO THIS DOES NOT WORK FOR LET EXPRESSIONS!!!!
+  }
+  return `function ${name} (${params.join(',')}) {${body}}`;
 };
 
 IdExp.prototype.gen = function () {
