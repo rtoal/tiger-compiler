@@ -16,43 +16,43 @@ function arrayToNullable(a) {
 
 /* eslint-disable no-unused-vars */
 const astGenerator = grammar.createSemantics().addOperation('ast', {
-  Exp_let(_1, decs, _2, body, _3) {
+  Exp_let(_let, decs, _in, body, _end) {
     return new LetExp(decs.ast(), body.ast());
   },
-  Exp_if(_1, test, _2, consequent, _3, alternate) {
+  Exp_if(_if, test, _then, consequent, _else, alternate) {
     return new IfExp(test.ast(), consequent.ast(), arrayToNullable(alternate.ast()));
   },
-  Exp_while(_1, test, _2, body) {
+  Exp_while(_while, test, _do, body) {
     return new WhileExp(test.ast(), body.ast());
   },
-  Exp_for(_1, id, _2, initial, _3, test, _4, body) {
+  Exp_for(_for, id, _gets, initial, _to, test, _do, body) {
     return new ForExp(id.sourceString, initial.ast(), test.ast(), body.ast());
   },
-  Exp_assign(target, _1, source) {
+  Exp_assign(target, _gets, source) {
     return new Assignment(target.ast(), source.ast());
   },
-  Exp_break(_1) {
+  Exp_break(_break) {
     return new Break();
   },
-  TypeDec(_1, id, _2, type) {
+  TypeDec(_type, id, _is, type) {
     return new TypeDec(id.ast(), type.ast());
   },
-  ArrayType(_1, _2, id) {
+  ArrayType(_array, _of, id) {
     return new ArrayType(id.ast());
   },
-  RecordType(_1, fieldDecs, _2) {
+  RecordType(_open, fieldDecs, _close) {
     return new RecordType(fieldDecs.ast());
   },
-  FunDec(_1, id, _2, params, _4, _5, typeid, _6, body) {
+  FunDec(_fun, id, _open, params, _close, _colon, typeid, _gets, body) {
     return new Func(id.ast(), params.ast(), arrayToNullable(typeid.ast()), body.ast());
   },
-  VarDec(_1, id, _2, typeid, _3, init) {
+  VarDec(_var, id, _colon, typeid, _gets, init) {
     return new Variable(id.ast(), arrayToNullable(typeid.ast()), init.ast());
   },
-  Field(id, _1, typeid) {
+  Field(id, _colon, typeid) {
     return new Field(id.ast(), typeid.ast());
   },
-  Param(id, _1, typeid) {
+  Param(id, _colon, typeid) {
     return new Param(id.ast(), typeid.ast());
   },
   Exp1_binary(left, op, right) {
@@ -70,37 +70,37 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
   Exp5_binary(left, op, right) {
     return new BinaryExp(op.ast(), left.ast(), right.ast());
   },
-  Exp6_negation(_1, operand) {
+  Exp6_negation(_negative, operand) {
     return new NegationExp(operand.ast());
   },
-  Literal_nil(_1) {
+  Literal_nil(_nil) {
     return new Nil();
   },
   Lvalue_id(id) {
     return new IdExp(id.ast());
   },
-  Lvalue_subscripted(array, _1, subscript, _2) {
+  Lvalue_subscripted(array, _open, subscript, _close) {
     return new SubscriptedExp(array.ast(), subscript.ast());
   },
-  Lvalue_field(record, _1, id) {
+  Lvalue_field(record, _dot, id) {
     return new MemberExp(record.ast(), id.ast());
   },
-  ArrayExp(type, _1, size, _2, _3, fill) {
+  ArrayExp(type, _open, size, _close, _of, fill) {
     return new ArrayExp(type.ast(), size.ast(), fill.ast());
   },
-  RecordExp(type, _1, bindings, _2) {
+  RecordExp(type, _open, bindings, _close) {
     return new RecordExp(type.ast(), bindings.ast());
   },
-  Binding(id, _1, value) {
+  Binding(id, _eq, value) {
     return new Binding(id.ast(), value.ast());
   },
-  Call(callee, _1, args, _2) {
+  Call(callee, _open, args, _close) {
     return new Call(callee.ast(), args.ast());
   },
-  ExpSeq(_1, exps, _2) {
+  ExpSeq(_open, exps, _close) {
     return new ExpSeq(exps.ast());
   },
-  NonemptyListOf(first, _, rest) {
+  NonemptyListOf(first, _separator, rest) {
     return [first.ast(), ...rest.ast()];
   },
   EmptyListOf() {
@@ -109,10 +109,10 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
   intlit(digits) {
     return new Literal(+this.sourceString);
   },
-  stringlit(_1, chars, _6) {
+  stringlit(_openQuote, chars, _closeQuote) {
     return new Literal(this.sourceString.slice(1, -1));
   },
-  id(_1, _2) {
+  id(_firstChar, _restChars) {
     return this.sourceString;
   },
   _terminal() {
