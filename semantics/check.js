@@ -67,6 +67,10 @@ module.exports = {
     doCheck(!usedFields.has(field), `Field ${field} already declared`);
   },
 
+  inLoop(context, keyword) {
+    doCheck(context.inLoop, `${keyword} can only be used in a loop`);
+  },
+
   // Same number of args and params; all types compatible
   legalArguments(args, params) {
     doCheck(args.length === params.length,

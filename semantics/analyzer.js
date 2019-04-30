@@ -29,7 +29,7 @@ Assignment.prototype.analyze = function (context) {
 };
 
 Break.prototype.analyze = function (context) {
-  check.inLoop(context);
+  check.inLoop(context, 'break');
 };
 
 BinaryExp.prototype.analyze = function (context) {
