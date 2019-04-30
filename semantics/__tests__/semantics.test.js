@@ -23,6 +23,7 @@ let
   function successor(x: int): int = x + 1
 in
   dogs[1] := "Sparky";
+  if "a" < "b" then 0;
   for i := 1 to 10 do
     print(concat(chr(2), "xyz"))
     /*

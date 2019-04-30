@@ -31,10 +31,6 @@ module.exports = {
     doCheck(expression.type === IntType, 'Not an integer');
   },
 
-  isString(expression) {
-    doCheck(expression.type === StringType, 'Not a string');
-  },
-
   isIntegerOrString(expression) {
     doCheck(
       expression.type === IntType || expression.type === StringType,
@@ -44,10 +40,6 @@ module.exports = {
 
   isFunction(value) {
     doCheck(value.constructor === Func, 'Not a function');
-  },
-
-  isFieldOfRecord(id, record) {
-    doCheck(record.type.fields.find(field => id === field.id), `No such field: ${id}`);
   },
 
   // Are two types exactly the same?
