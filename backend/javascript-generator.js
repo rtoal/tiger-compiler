@@ -62,7 +62,8 @@ function generateLibraryFunctions() {
 
 module.exports = function (exp) {
   const libraryFunctions = generateLibraryFunctions();
-  const program = `${libraryFunctions} ${exp.gen()}`;
+  // Separate with a semicolon to avoid possible translation as a function call
+  const program = `${libraryFunctions} ; ${exp.gen()}`;
   return prettyJs(program, { indent: '  ' });
 };
 
