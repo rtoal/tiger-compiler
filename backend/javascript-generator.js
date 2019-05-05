@@ -19,7 +19,6 @@ const {
   IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param, RecordExp,
   SubscriptedExp, TypeDec, Variable, WhileExp,
 } = require('../ast');
-const Context = require('../semantics/context');
 const { StringType } = require('../semantics/builtins');
 
 function makeOp(op) {
@@ -41,31 +40,27 @@ const javaScriptId = (() => {
   };
 })();
 
-function generateLibraryFunctions() {
-  function generateLibraryStub(name, params, body) {
-    const entity = Context.INITIAL.locals.get(name);
-    return `function ${javaScriptId(entity)}(${params}) {${body}}`;
-  }
-  return [
-    generateLibraryStub('print', 's', 'console.log(s);'),
-    generateLibraryStub('ord', 's', 'return s.charCodeAt(0);'),
-    generateLibraryStub('chr', 'i', 'return String.fromCharCode(i);'),
-    generateLibraryStub('size', 's', 'return s.length;'),
-    generateLibraryStub('substring', 's, i, n', 'return s.substr(i, n);'),
-    generateLibraryStub('concat', 's, t', 'return s.concat(t);'),
-    generateLibraryStub('not', 's', 'return !s;'),
-    generateLibraryStub('exit', 'code', 'process.exit(code);'),
-  ].join('');
-}
-
-module.exports = function (exp) {
-  const libraryFunctions = generateLibraryFunctions();
-  // Separate with a semicolon to avoid possible translation as a function call
-  const program = `${libraryFunctions} ; ${exp.gen()}`;
-  return beautify(program, { indent_size: 2 });
+// Let's inline the built-in functions, because we can!
+const builtin = {
+  print([s]) { return `console.log(${s})`; },
+  ord([s]) { return `(${s}).charCodeAt(0)`; },
+  chr([i]) { return `String.fromCharCode(${i})`; },
+  size([s]) { return `${s}.length`; },
+  substring([s, i, n]) { return `${s}.substr(${i}, ${n})`; },
+  concat([s, t]) { return `${s}.concat(${t})`; },
+  not(i) { return `(!(${i}))`; },
+  exit(code) { return `process.exit(${code})`; },
 };
 
-// This only exists because Tiger is expression-oriented
+module.exports = function (exp) {
+  return beautify(exp.gen(), { indent_size: 2 });
+};
+
+// This only exists because Tiger is expression-oriented and JavaScript is not.
+// It's pretty crazy! In the case where the expression is actually a sequence,
+// we have to dig in and stick a 'return' before the last expression. And this
+// as to be recursive, because the last expression of a sequence could actually
+// be a sequence....
 function makeReturn(exp) {
   if (!exp) {
     return undefined;
@@ -105,7 +100,11 @@ Break.prototype.gen = function () {
 };
 
 Call.prototype.gen = function () {
-  return `${javaScriptId(this.callee)}(${this.args.map(a => a.gen()).join(',')})`;
+  const args = this.args.map(a => a.gen());
+  if (this.callee.builtin) {
+    return builtin[this.callee.id](args);
+  }
+  return `${javaScriptId(this.callee)}(${args.join(',')})`;
 };
 
 ExpSeq.prototype.gen = function () {
@@ -139,9 +138,8 @@ IfExp.prototype.gen = function () {
 };
 
 LetExp.prototype.gen = function () {
-  const decs = this.decs.filter(d => d.constructor !== TypeDec).map(d => d.gen()).join(';');
-  const body = this.body.map(e => e.gen()).join(';');
-  return `${decs} ; ${body} ; })())`;
+  // This looks insane, but let-expressions really are closures!
+  return `(() => {${makeReturn(this)} ; })()`;
 };
 
 Literal.prototype.gen = function () {
