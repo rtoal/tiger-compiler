@@ -49,6 +49,11 @@ const fixture = {
     String.raw`let type r = {x:string} var p := r{x="@"} in print(p.x) end`,
     /let p_(\d+) = \{\s*x: "@"\s*\};\s*console.log\(p_\1\.x\)/,
   ],
+
+  subscript: [
+    String.raw`let type r = array of string var a := r[3] of "" in print(a[0]) end`,
+    /let a_(\d+) = Array\(3\).fill\(""\);\s*console.log\(a_\1\[0\]\)/,
+  ],
 };
 
 describe('The JavaScript generator', () => {
