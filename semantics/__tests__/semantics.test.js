@@ -6,7 +6,7 @@
  */
 
 const parse = require('../../ast/parser');
-const Context = require('../context');
+const analyze = require('../analyzer');
 
 // This is just enough to complete 100% analyzer coverage, but feels light to me.
 const program = String.raw`
@@ -37,7 +37,7 @@ describe('The semantic analyzer', () => {
   test('accepts the mega program with all syntactic forms', (done) => {
     const astRoot = parse(program);
     expect(astRoot).toBeTruthy();
-    astRoot.analyze(Context.INITIAL);
+    analyze(astRoot);
     expect(astRoot).toBeTruthy();
     done();
   });
