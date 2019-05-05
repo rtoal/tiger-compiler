@@ -149,7 +149,7 @@ Literal.prototype.gen = function () {
 };
 
 MemberExp.prototype.gen = function () {
-  return `${this.record.gen()}.${javaScriptId(this)}`;
+  return `${this.record.gen()}.${this.id}`;
 };
 
 SubscriptedExp.prototype.gen = function () {
