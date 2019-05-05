@@ -168,10 +168,6 @@ Nil.prototype.gen = function () {
   return 'null';
 };
 
-Param.prototype.gen = function () {
-  return javaScriptId(this);
-};
-
 RecordExp.prototype.gen = function () {
   return `{${this.bindings.map(b => b.gen()).join(',')}}`;
 };

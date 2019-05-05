@@ -16,8 +16,8 @@ const fixture = {
   ],
 
   arithmetic: [
-    String.raw`5 * 2 + 8`,
-    String.raw`((5 * 2) + 8)`,
+    String.raw`5 * -2 + 8`,
+    String.raw`((5 * (-(2))) + 8)`,
   ],
 
   letAndAssign: [
@@ -43,6 +43,11 @@ const fixture = {
   ifThenElse: [
     String.raw`if 3 then 5 else 8`,
     '((3) ? (5) : (8))',
+  ],
+
+  member: [
+    String.raw`let type r = {x:string} var p := r{x="@"} in print(p.x) end`,
+    /let p_(\d+) = \{\s*x: "@"\s*\};\s*console.log\(p_\1\.x\)/,
   ],
 };
 
