@@ -59,6 +59,16 @@ const fixture = {
     String.raw`let type r = array of string var a := r[3] of "" in print(a[0]) end`,
     /let a_(\d+) = Array\(3\).fill\(""\);\s*console.log\(a_\1\[0\]\)/,
   ],
+
+  letInFunction: [
+    String.raw`let function f():int = let var x:= 1 in x end in () end`,
+    /function f_(\d+)\(\) \{\s*let x_(\d+) = 1;\s*return x_\2\s*\};/,
+  ],
+
+  letAsValue: [
+    String.raw`print(let var x := "dog" in concat(x, "s") end)`,
+    /console.log\(\(\(\) => \{\s*let x_(\d+) = "dog";\s*return x_\1.concat\("s"\);\s*\}\)\(\)\)/,
+  ],
 };
 
 describe('The JavaScript generator', () => {
