@@ -65,6 +65,25 @@ module.exports = function (exp) {
   return beautify(program, { indent_size: 2 });
 };
 
+// This only exists because Tiger is expression-oriented
+function makeReturn(exp) {
+  if (!exp) {
+    return undefined;
+  }
+  if (exp.constructor === LetExp) {
+    const filteredDecs = exp.decs.filter(d => d.constructor !== TypeDec);
+    const all = [...filteredDecs, ...exp.body.slice(0, -1)].map(e => e.gen());
+    all.push(makeReturn(exp.body[exp.body.length - 1]));
+    return all.join(';');
+  }
+  if (exp.constructor === ExpSeq) {
+    const generated = exp.exps.slice(0, -1).map(e => e.gen());
+    generated.push(makeReturn(exp.exps[exp.exps.length - 1]));
+    return generated.join(';');
+  }
+  return `return ${exp.gen()}`;
+}
+
 ArrayExp.prototype.gen = function () {
   return `Array(${this.size.gen()}).fill(${this.fill.gen()})`;
 };
@@ -90,7 +109,7 @@ Call.prototype.gen = function () {
 };
 
 ExpSeq.prototype.gen = function () {
-  return this.exps.map(s => `${s.gen()}`).join(';');
+  return this.exps.map(e => e.gen()).join(';');
 };
 
 ForExp.prototype.gen = function () {
@@ -104,11 +123,8 @@ ForExp.prototype.gen = function () {
 Func.prototype.gen = function () {
   const name = javaScriptId(this);
   const params = this.params.map(javaScriptId);
-  let body = this.body.gen();
-  if (this.body.type) {
-    // "Void" functions do not have a JS return, others do
-    body = `return ${body};`;
-  }
+  // "Void" functions do not have a JS return, others do
+  const body = this.body.type ? makeReturn(this.body) : this.body;
   return `function ${name} (${params.join(',')}) {${body}}`;
 };
 
@@ -125,7 +141,7 @@ IfExp.prototype.gen = function () {
 LetExp.prototype.gen = function () {
   const decs = this.decs.filter(d => d.constructor !== TypeDec).map(d => d.gen()).join(';');
   const body = this.body.map(e => e.gen()).join(';');
-  return `((()=>{ ${decs} ; ${body} ; })())`;
+  return `${decs} ; ${body} ; })())`;
 };
 
 Literal.prototype.gen = function () {
