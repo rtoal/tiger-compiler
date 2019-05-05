@@ -94,14 +94,19 @@ SubscriptedExp.prototype.optimize = function () {
 
 NegationExp.prototype.optimize = function () {
   this.operand = this.operand.optimize();
+  if (this.operand instanceof Literal) {
+    return new Literal(-this.operand.value);
+  }
   return this;
 };
 
 Nil.prototype.optimize = function () {
+  // Nil is just nil
   return this;
 };
 
 Param.prototype.optimize = function () {
+  // Nothing to do in Tiger, since it does not defaults
   return this;
 };
 
@@ -117,6 +122,10 @@ Variable.prototype.optimize = function () {
 
 WhileExp.prototype.optimize = function () {
   this.test = this.test.optimize();
+  if (this.test instanceof Literal && !this.test.value) {
+    // While-false is a no-operation, don't even need the body
+    return new Nil();
+  }
   this.body = this.body.optimize();
   return this;
 };

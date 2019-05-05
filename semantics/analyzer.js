@@ -1,12 +1,17 @@
+// The semantic analyzer
+
 const {
   ArrayExp, ArrayType, Assignment, BinaryExp, Binding, Break, Call, ExpSeq, Field,
   ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param,
   RecordExp, RecordType, SubscriptedExp, TypeDec, Variable, WhileExp,
 } = require('../ast');
-
 const { IntType, StringType, NilType } = require('./builtins');
-
 const check = require('./check');
+const Context = require('./context');
+
+module.exports = function (exp) {
+  exp.analyze(Context.INITIAL);
+};
 
 ArrayExp.prototype.analyze = function (context) {
   this.type = context.lookup(this.type);

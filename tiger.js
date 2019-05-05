@@ -3,8 +3,10 @@
 /*
  * A Tiger Compiler
  *
- * This is a command line application that compiles a Tiger program from
- * a file. Synopsis:
+ * This module contains functions for compiling Tiger programs into JavaScript:
+ * one taking the Tiger program is a string, and the other taking in a filename.
+ * It can also be used a script, in which case the filename is a command line
+ * argument, in addition to options. Synopsis:
  *
  * ./tiger.js -a <filename>
  *     writes out the AST and stops
@@ -17,7 +19,7 @@
  *     JavaScript code to standard output.
  *
  * ./tiger.js -o <filename>
- *     optimizes the intermediate code before generating target JavaScript.
+ *     optimizes the intermediate code before generating JavaScript.
  *
  * Output of the AST and decorated AST uses the object inspection functionality
  * built into Node.js.
@@ -27,9 +29,9 @@ const fs = require('fs');
 const util = require('util');
 const yargs = require('yargs');
 const parse = require('./ast/parser');
-const Context = require('./semantics/context');
-require('./optimizer/index');
-const generateProgram = require('./backend/javascript-generator');
+const analyze = require('./semantics/analyzer');
+require('./optimizer');
+const generate = require('./backend/javascript-generator');
 
 // If compiling from a string, return the AST, IR, or compiled code as a string.
 function compile(sourceCode, { astOnly, frontEndOnly, shouldOptimize }) {
@@ -37,14 +39,14 @@ function compile(sourceCode, { astOnly, frontEndOnly, shouldOptimize }) {
   if (astOnly) {
     return util.inspect(program, { depth: null });
   }
-  program.analyze(Context.INITIAL);
+  analyze(program);
   if (shouldOptimize) {
     program = program.optimize();
   }
   if (frontEndOnly) {
     return util.inspect(program, { depth: null });
   }
-  return generateProgram(program);
+  return generate(program);
 }
 
 // If compiling from a file, write to standard output.
@@ -58,10 +60,10 @@ function compileFile(filename, options) {
   });
 }
 
+// Two nice functions if you'd like to embed a compiler in your own apps.
 module.exports = { compile, compileFile };
 
-// If running as a script, we have a lot of command line processing to do. The source
-// program will come from the file whose name is given as the command line argument.
+// Run the compiler as a command line application.
 if (require.main === module) {
   const { argv } = yargs.usage('$0 [-a] [-o] [-i] filename')
     .boolean(['a', 'o', 'i'])
