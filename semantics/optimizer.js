@@ -1,8 +1,20 @@
 const {
   ArrayExp, Assignment, BinaryExp, Binding, Break, Call, ExpSeq, ForExp, Func,
   IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param, RecordExp,
-  SubscriptedExp, Variable, WhileExp,
+  SubscriptedExp, TypeDec, Variable, WhileExp,
 } = require('../ast');
+
+function isZero(e) {
+  return e instanceof Literal && e.value === 0;
+}
+
+function isOne(e) {
+  return e instanceof Literal && e.value === 1;
+}
+
+function bothLiterals(b) {
+  return b.left instanceof Literal && b.right instanceof Literal;
+}
 
 ArrayExp.prototype.optimize = function () {
   this.size = this.size.optimize();
@@ -22,8 +34,17 @@ Assignment.prototype.optimize = function () {
 BinaryExp.prototype.optimize = function () {
   this.left = this.left.optimize();
   this.right = this.right.optimize();
-  if (this.op === '+' && this.right instanceof Literal && this.right.value === 0) {
-    return this.left;
+  if (this.op === '+' && isZero(this.right)) return this.left;
+  if (this.op === '+' && isZero(this.left)) return this.right;
+  if (this.op === '*' && isZero(this.right)) return new Literal(0);
+  if (this.op === '*' && isZero(this.left)) return new Literal(0);
+  if (this.op === '*' && isOne(this.right)) return this.left;
+  if (this.op === '*' && isOne(this.left)) return this.right;
+  if (bothLiterals(this)) {
+    const [x, y] = [this.left.value, this.right.value];
+    if (this.op === '+') return new Literal(x + y);
+    if (this.op === '*') return new Literal(x * y);
+    if (this.op === '/') return new Literal(x / y);
   }
   return this;
 };
@@ -45,6 +66,9 @@ Call.prototype.optimize = function () {
 
 ExpSeq.prototype.optimize = function () {
   this.exps = this.exps.map(s => s.optimize());
+  if (this.exps.length === 1) {
+    return this.exps[0];
+  }
   return this;
 };
 
@@ -56,7 +80,9 @@ ForExp.prototype.optimize = function () {
 };
 
 Func.prototype.optimize = function () {
-  this.body = this.body.optimize();
+  if (this.body) {
+    this.body = this.body.optimize();
+  }
   return this;
 };
 
@@ -68,11 +94,14 @@ IfExp.prototype.optimize = function () {
   this.test = this.test.optimize();
   this.consequent = this.consequent.optimize();
   this.alternate = this.alternate.optimize();
+  if (isZero(this.test)) {
+    return this.alternate;
+  }
   return this;
 };
 
 LetExp.prototype.optimize = function () {
-  this.decs = this.decs.map(d => d.optimize());
+  this.decs = this.decs.filter(d => d.constructor !== TypeDec).map(d => d.optimize());
   this.body = this.body.map(e => e.optimize());
   return this;
 };
@@ -106,7 +135,7 @@ Nil.prototype.optimize = function () {
 };
 
 Param.prototype.optimize = function () {
-  // Nothing to do in Tiger, since it does not defaults
+  // Nothing to do in Tiger, since it does not have defaults
   return this;
 };
 

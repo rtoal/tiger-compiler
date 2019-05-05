@@ -1,0 +1,5 @@
+let
+  var x := 2 * 8
+in
+  if (0 * 9) then 3 else 5
+end
