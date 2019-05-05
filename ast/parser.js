@@ -1,6 +1,5 @@
 const fs = require('fs');
 const ohm = require('ohm-js');
-
 const {
   ArrayExp, ArrayType, Assignment, BinaryExp, Binding, Break, Call, ExpSeq, Field,
   ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param,
@@ -43,7 +42,7 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
   RecordType(_open, fieldDecs, _close) {
     return new RecordType(fieldDecs.ast());
   },
-  FunDec(_fun, id, _open, params, _close, _colon, typeid, _gets, body) {
+  FunDec(_fun, id, params, _colon, typeid, _eq, body) {
     return new Func(id.ast(), params.ast(), arrayToNullable(typeid.ast()), body.ast());
   },
   VarDec(_var, id, _colon, typeid, _gets, init) {
@@ -51,6 +50,9 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
   },
   Field(id, _colon, typeid) {
     return new Field(id.ast(), typeid.ast());
+  },
+  Params(_open, params, _close) {
+    return params.ast();
   },
   Param(id, _colon, typeid) {
     return new Param(id.ast(), typeid.ast());
