@@ -95,7 +95,7 @@ ForExp.prototype.analyze = function (context) {
 Func.prototype.analyzeSignature = function (context) {
   this.bodyContext = context.createChildContextForFunctionBody();
   this.params.forEach(p => p.analyze(this.bodyContext));
-  this.returnType = context.lookup(this.returnType);
+  this.returnType = !this.returnType ? undefined : context.lookup(this.returnType);
 };
 
 Func.prototype.analyze = function () {

@@ -125,7 +125,7 @@ Func.prototype.gen = function () {
   const name = javaScriptId(this);
   const params = this.params.map(javaScriptId);
   // "Void" functions do not have a JS return, others do
-  const body = this.body.type ? makeReturn(this.body) : this.body;
+  const body = this.body.type ? makeReturn(this.body) : this.body.gen();
   return `function ${name} (${params.join(',')}) {${body}}`;
 };
 
@@ -134,14 +134,18 @@ IdExp.prototype.gen = function () {
 };
 
 IfExp.prototype.gen = function () {
-  const thenPart = this.consequent;
-  const elsePart = this.alternate ? this.alternate.gen() : '';
-  return `if (${test.gen()}) ${thenPart} ${elsePart}`;
+  const thenPart = this.consequent.gen();
+  const elsePart = this.alternate ? this.alternate.gen() : 'null';
+  return `((${this.test.gen()}) ? (${thenPart}) : (${elsePart}))`;
 };
 
 LetExp.prototype.gen = function () {
-  // This looks insane, but let-expressions really are closures!
-  return `(() => {${makeReturn(this)} ; })()`;
+  if (this.type) {
+    // This looks insane, but let-expressions really are closures!
+    return `(() => {${makeReturn(this)} ; })()`;
+  }
+  const filteredDecs = this.decs.filter(d => d.constructor !== TypeDec);
+  return [...filteredDecs, ...this.body].map(e => e.gen()).join(';');
 };
 
 Literal.prototype.gen = function () {

@@ -19,6 +19,31 @@ const fixture = {
     String.raw`5 * 2 + 8`,
     String.raw`((5 * 2) + 8)`,
   ],
+
+  letAndAssign: [
+    String.raw`let var x := 3 in x := 2 end`,
+    /let x_(\d+) = 3;\s+x_\1 = 2/,
+  ],
+
+  call: [
+    String.raw`let function f(x: int, y: string) = () in f(1, "") end`,
+    /function f_(\d+)\(x_\d+, y_\d+\) \{\s*};\s*f_\1\(1, ""\)/,
+  ],
+
+  whileLoop: [
+    String.raw`while 7 do nil`,
+    /while \(7\) \{\s*null\s*\}/,
+  ],
+
+  ifThen: [
+    String.raw`if 3 then 5`,
+    '((3) ? (5) : (null))',
+  ],
+
+  ifThenElse: [
+    String.raw`if 3 then 5 else 8`,
+    '((3) ? (5) : (8))',
+  ],
 };
 
 describe('The JavaScript generator', () => {
@@ -26,7 +51,7 @@ describe('The JavaScript generator', () => {
     test(`produces the correct output for ${name}`, (done) => {
       const ast = parse(source);
       analyze(ast);
-      expect(generate(ast)).toEqual(expected);
+      expect(generate(ast)).toMatch(expected);
       done();
     });
   });

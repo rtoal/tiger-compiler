@@ -1,0 +1,10 @@
+let
+  function f(x: int, y: int): int =
+    let
+      var z:=x + y
+    in
+      2 * z
+    end
+in
+  f(10, 1)
+end
