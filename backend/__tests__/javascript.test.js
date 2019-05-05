@@ -69,6 +69,11 @@ const fixture = {
     String.raw`print(let var x := "dog" in concat(x, "s") end)`,
     /console.log\(\(\(\) => \{\s*let x_(\d+) = "dog";\s*return x_\1.concat\("s"\);\s*\}\)\(\)\)/,
   ],
+
+  returnExpressionSequence: [
+    String.raw`let function f():int = let var x:= 1 in (1;2;3) end in () end`,
+    /function f_(\d+)\(\) {\s*let x_(\d+) = 1;\s*1;\s*2;\s*return 3\s*\};/,
+  ],
 };
 
 describe('The JavaScript generator', () => {
