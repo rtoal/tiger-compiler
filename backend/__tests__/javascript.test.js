@@ -35,6 +35,11 @@ const fixture = {
     /while \(7\) \{\s*null\s*\}/,
   ],
 
+  forLoop: [
+    String.raw`for i := 0 to 10 do ()`,
+    /let hi_(\d+) = 10;\s*for \(let i_(\d+) = 0; i_\2 <= hi_\1; i_\2\+\+\) \{\s*\}/,
+  ],
+
   ifThen: [
     String.raw`if 3 then 5`,
     '((3) ? (5) : (null))',

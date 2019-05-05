@@ -115,7 +115,7 @@ ForExp.prototype.gen = function () {
   const i = javaScriptId(this.index);
   const low = this.low.gen();
   const hi = javaScriptId(new Variable('hi'));
-  const preAssign = `${hi} = ${this.high.gen()};`;
+  const preAssign = `let ${hi} = ${this.high.gen()};`;
   const loopControl = `for (let ${i} = ${low}; ${i} <= ${hi}; ${i}++)`;
   const body = this.body.gen();
   return `${preAssign} ${loopControl} {${body}}`;
