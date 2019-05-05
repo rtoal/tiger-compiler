@@ -13,14 +13,12 @@
  *   generate(tigerExpression);
  */
 
-const prettyJs = require('pretty-js');
-
+const beautify = require('js-beautify');
 const {
   ArrayExp, Assignment, BinaryExp, Binding, Break, Call, ExpSeq, ForExp, Func,
   IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param, RecordExp,
   SubscriptedExp, TypeDec, Variable, WhileExp,
 } = require('../ast');
-
 const Context = require('../semantics/context');
 const { StringType } = require('../semantics/builtins');
 
@@ -53,7 +51,7 @@ function generateLibraryFunctions() {
     generateLibraryStub('ord', 's', 'return s.charCodeAt(0);'),
     generateLibraryStub('chr', 'i', 'return String.fromCharCode(i);'),
     generateLibraryStub('size', 's', 'return s.length;'),
-    generateLibraryStub('substring', 's, i, j', 'return s.substr(i, n);'),
+    generateLibraryStub('substring', 's, i, n', 'return s.substr(i, n);'),
     generateLibraryStub('concat', 's, t', 'return s.concat(t);'),
     generateLibraryStub('not', 's', 'return !s;'),
     generateLibraryStub('exit', 'code', 'process.exit(code);'),
@@ -64,7 +62,7 @@ module.exports = function (exp) {
   const libraryFunctions = generateLibraryFunctions();
   // Separate with a semicolon to avoid possible translation as a function call
   const program = `${libraryFunctions} ; ${exp.gen()}`;
-  return prettyJs(program, { indent: '  ' });
+  return beautify(program, { indent_size: 2 });
 };
 
 ArrayExp.prototype.gen = function () {
@@ -92,7 +90,7 @@ Call.prototype.gen = function () {
 };
 
 ExpSeq.prototype.gen = function () {
-  return this.exps.map(s => `${s.gen()};`).join('');
+  return this.exps.map(s => `${s.gen()}`).join(';');
 };
 
 ForExp.prototype.gen = function () {
@@ -110,7 +108,6 @@ Func.prototype.gen = function () {
   if (this.body.type) {
     // "Void" functions do not have a JS return, others do
     body = `return ${body};`;
-    // TODO THIS DOES NOT WORK FOR LET EXPRESSIONS!!!!
   }
   return `function ${name} (${params.join(',')}) {${body}}`;
 };
@@ -126,8 +123,9 @@ IfExp.prototype.gen = function () {
 };
 
 LetExp.prototype.gen = function () {
-  const decs = this.decs.filter(d => d.constructor !== TypeDec);
-  return `{ ${decs.map(d => d.gen()).join(';')} ; ${this.body.map(e => e.gen()).join(';')} }`;
+  const decs = this.decs.filter(d => d.constructor !== TypeDec).map(d => d.gen()).join(';');
+  const body = this.body.map(e => e.gen()).join(';');
+  return `((()=>{ ${decs} ; ${body} ; })())`;
 };
 
 Literal.prototype.gen = function () {
