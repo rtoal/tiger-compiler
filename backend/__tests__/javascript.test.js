@@ -74,6 +74,16 @@ const fixture = {
     String.raw`let function f():int = let var x:= 1 in (1;2;3) end in () end`,
     /function f_(\d+)\(\) {\s*let x_(\d+) = 1;\s*1;\s*2;\s*return 3\s*\};/,
   ],
+
+  moreBuiltIns: [
+    String.raw`(ord("x"); chr(30); substring("abc", 0, 1))`,
+    /\("x"\).charCodeAt\(0\);\s*String.fromCharCode\(30\);\s*"abc".substr\(0, 1\)/,
+  ],
+
+  evenMoreBuiltIns: [
+    String.raw`(not(1) ; size(""); exit(3))`,
+    /\(!\(1\)\);\s*"".length;\s*process\.exit\(3\)/,
+  ],
 };
 
 describe('The JavaScript generator', () => {
