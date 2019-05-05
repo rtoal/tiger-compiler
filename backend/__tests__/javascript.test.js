@@ -31,8 +31,8 @@ const fixture = {
   ],
 
   whileLoop: [
-    String.raw`while 7 do nil`,
-    /while \(7\) \{\s*null\s*\}/,
+    String.raw`while 7 do break`,
+    /while \(7\) \{\s*break\s*\}/,
   ],
 
   forLoop: [
@@ -71,8 +71,8 @@ const fixture = {
   ],
 
   returnExpressionSequence: [
-    String.raw`let function f():int = let var x:= 1 in (1;2;3) end in () end`,
-    /function f_(\d+)\(\) {\s*let x_(\d+) = 1;\s*1;\s*2;\s*return 3\s*\};/,
+    String.raw`let function f():int = let var x:= 1 in (1;nil;3) end in () end`,
+    /function f_(\d+)\(\) {\s*let x_(\d+) = 1;\s*1;\s*null;\s*return 3\s*\};/,
   ],
 
   moreBuiltIns: [
