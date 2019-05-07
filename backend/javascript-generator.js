@@ -16,7 +16,7 @@
 const beautify = require('js-beautify');
 const {
   ArrayExp, Assignment, BinaryExp, Binding, Break, Call, ExpSeq, ForExp, Func,
-  IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param, RecordExp,
+  IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, RecordExp,
   SubscriptedExp, TypeDec, Variable, WhileExp,
 } = require('../ast');
 const { StringType } = require('../semantics/builtins');

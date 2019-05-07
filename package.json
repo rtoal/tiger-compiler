@@ -4,7 +4,8 @@
   "description": "A compiler for Andrew Appel's Tiger Language",
   "main": "tiger.js",
   "scripts": {
-    "test": "jest --collect-coverage"
+    "test": "jest --collect-coverage",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
