@@ -1,9 +1,31 @@
 const fs = require('fs');
 const ohm = require('ohm-js');
 const {
-  ArrayExp, ArrayType, Assignment, BinaryExp, Binding, Break, Call, ExpSeq, Field,
-  ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param,
-  RecordExp, RecordType, SubscriptedExp, TypeDec, Variable, WhileExp,
+  ArrayExp,
+  ArrayType,
+  Assignment,
+  BinaryExp,
+  Binding,
+  Break,
+  Call,
+  ExpSeq,
+  Field,
+  ForExp,
+  Func,
+  IdExp,
+  IfExp,
+  LetExp,
+  Literal,
+  MemberExp,
+  NegationExp,
+  Nil,
+  Param,
+  RecordExp,
+  RecordType,
+  SubscriptedExp,
+  TypeDec,
+  Variable,
+  WhileExp,
 } = require('../ast');
 
 const grammar = ohm.grammar(fs.readFileSync('grammar/tiger.ohm'));
@@ -123,7 +145,7 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
 });
 /* eslint-enable no-unused-vars */
 
-module.exports = (text) => {
+module.exports = text => {
   const match = grammar.match(text);
   if (!match.succeeded()) {
     throw new Error(`Syntax Error: ${match.message}`);

@@ -38,7 +38,7 @@ module.exports = {
   isIntegerOrString(expression) {
     doCheck(
       expression.type === IntType || expression.type === StringType,
-      'Not an integer or string',
+      'Not an integer or string'
     );
   },
 
@@ -54,16 +54,17 @@ module.exports = {
   // Can we assign expression to a variable/param/field of type type?
   isAssignableTo(expression, type) {
     doCheck(
-      (expression.type === NilType && type.constructor === RecordType)
-      || (expression.type === type),
-      `Expression of type ${util.format(expression.type)} not compatible with type ${util.format(type)}`,
+      (expression.type === NilType && type.constructor === RecordType) || expression.type === type,
+      `Expression of type ${util.format(expression.type)} not compatible with type ${util.format(
+        type
+      )}`
     );
   },
 
   isNotReadOnly(lvalue) {
     doCheck(
       !(lvalue.constructor === IdExp && lvalue.ref.readOnly),
-      'Assignment to read-only variable',
+      'Assignment to read-only variable'
     );
   },
 
@@ -77,8 +78,10 @@ module.exports = {
 
   // Same number of args and params; all types compatible
   legalArguments(args, params) {
-    doCheck(args.length === params.length,
-      `Expected ${params.length} args in call, got ${args.length}`);
+    doCheck(
+      args.length === params.length,
+      `Expected ${params.length} args in call, got ${args.length}`
+    );
     args.forEach((arg, i) => this.isAssignableTo(arg, params[i].type));
   },
 

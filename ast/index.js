@@ -28,8 +28,7 @@ class Binding {
   }
 }
 
-class Break {
-}
+class Break {}
 
 class Call {
   constructor(callee, args) {
@@ -97,8 +96,7 @@ class NegationExp {
   }
 }
 
-class Nil {
-}
+class Nil {}
 
 class Param {
   constructor(id, type) {
@@ -149,7 +147,30 @@ class WhileExp {
 }
 
 module.exports = {
-  ArrayExp, ArrayType, Assignment, BinaryExp, Binding, Break, Call, ExpSeq, Field,
-  ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param,
-  PrimitiveType, RecordExp, RecordType, SubscriptedExp, TypeDec, Variable, WhileExp,
+  ArrayExp,
+  ArrayType,
+  Assignment,
+  BinaryExp,
+  Binding,
+  Break,
+  Call,
+  ExpSeq,
+  Field,
+  ForExp,
+  Func,
+  IdExp,
+  IfExp,
+  LetExp,
+  Literal,
+  MemberExp,
+  NegationExp,
+  Nil,
+  Param,
+  PrimitiveType,
+  RecordExp,
+  RecordType,
+  SubscriptedExp,
+  TypeDec,
+  Variable,
+  WhileExp,
 };

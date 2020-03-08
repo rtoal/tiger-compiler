@@ -77,7 +77,7 @@ class Context {
 }
 
 Context.INITIAL = new Context();
-[IntType, StringType, NilType, ...standardFunctions].forEach((entity) => {
+[IntType, StringType, NilType, ...standardFunctions].forEach(entity => {
   Context.INITIAL.add(entity);
 });
 

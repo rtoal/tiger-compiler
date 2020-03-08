@@ -10,16 +10,35 @@
 const parse = require('../parser');
 
 const {
-  ArrayExp, ArrayType, Assignment, BinaryExp, Binding, Break, Call, ExpSeq, Field,
-  ForExp, Func, IdExp, IfExp, LetExp, Literal, MemberExp, NegationExp, Nil, Param,
-  RecordExp, RecordType, SubscriptedExp, TypeDec, Variable, WhileExp,
+  ArrayExp,
+  ArrayType,
+  Assignment,
+  BinaryExp,
+  Binding,
+  Break,
+  Call,
+  ExpSeq,
+  Field,
+  ForExp,
+  Func,
+  IdExp,
+  IfExp,
+  LetExp,
+  Literal,
+  MemberExp,
+  NegationExp,
+  Nil,
+  Param,
+  RecordExp,
+  RecordType,
+  SubscriptedExp,
+  TypeDec,
+  Variable,
+  WhileExp,
 } = require('../../ast');
 
 const fixture = {
-  hello: [
-    String.raw`print("Hello, world\n")`,
-    new Call('print', [new Literal('Hello, world\\n')]),
-  ],
+  hello: [String.raw`print("Hello, world\n")`, new Call('print', [new Literal('Hello, world\\n')])],
 
   breaks: [
     String.raw`while 0 do (break; break)`,
@@ -32,7 +51,7 @@ const fixture = {
       'i',
       new Literal(0),
       new Literal(9),
-      new IfExp(new IdExp('i'), new Assignment(new IdExp('i'), new Literal(100)), null),
+      new IfExp(new IdExp('i'), new Assignment(new IdExp('i'), new Literal(100)), null)
     ),
   ],
 
@@ -43,26 +62,32 @@ const fixture = {
       addTwo(ord("dog"))
     end`,
     new LetExp(
-      [new Func('addTwo', [new Param('x', 'int')], 'int',
-        new BinaryExp('+', new IdExp('x'), new Literal(2)))],
-      [new Call('addTwo', [new Call('ord', [new Literal('dog')])])],
+      [
+        new Func(
+          'addTwo',
+          [new Param('x', 'int')],
+          'int',
+          new BinaryExp('+', new IdExp('x'), new Literal(2))
+        ),
+      ],
+      [new Call('addTwo', [new Call('ord', [new Literal('dog')])])]
     ),
   ],
 
-  emptyParameters: [
-    String.raw`f()`,
-    new Call('f', []),
-  ],
+  emptyParameters: [String.raw`f()`, new Call('f', [])],
 
   arrays: [
     String.raw`let type list = array of int var x: list := list [1] of -9 in x[0] end`,
     new LetExp(
       [
         new TypeDec('list', new ArrayType('int')),
-        new Variable('x', 'list',
-          new ArrayExp('list', new Literal(1), new NegationExp(new Literal(9)))),
+        new Variable(
+          'x',
+          'list',
+          new ArrayExp('list', new Literal(1), new NegationExp(new Literal(9)))
+        ),
       ],
-      [new SubscriptedExp(new IdExp('x'), new Literal(0))],
+      [new SubscriptedExp(new IdExp('x'), new Literal(0))]
     ),
   ],
 
@@ -80,28 +105,31 @@ const fixture = {
         new Variable('p', 'point', new Nil()),
       ],
       [
-        new Call('print', [new RecordExp(
-          'point', [new Binding('x', new Literal(1)), new Binding('y', new Literal(8))],
-        )]),
+        new Call('print', [
+          new RecordExp('point', [
+            new Binding('x', new Literal(1)),
+            new Binding('y', new Literal(8)),
+          ]),
+        ]),
         new BinaryExp(
           '|',
           new BinaryExp('*', new MemberExp(new IdExp('p'), 'y'), new Literal(3)),
-          new Literal(5),
+          new Literal(5)
         ),
-      ],
+      ]
     ),
   ],
 };
 
 describe('The parser', () => {
   Object.entries(fixture).forEach(([name, [source, expected]]) => {
-    test(`produces the correct AST for ${name}`, (done) => {
+    test(`produces the correct AST for ${name}`, done => {
       expect(parse(source)).toEqual(expected);
       done();
     });
   });
 
-  test('throws an exception on a syntax error', (done) => {
+  test('throws an exception on a syntax error', done => {
     expect(() => parse('as$df^&%*$&')).toThrow();
     done();
   });
