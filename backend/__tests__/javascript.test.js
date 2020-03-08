@@ -10,45 +10,27 @@ const analyze = require('../../semantics/analyzer');
 const generate = require('../javascript-generator');
 
 const fixture = {
-  hello: [
-    String.raw`print("Hello, world\n")`,
-    String.raw`console.log("Hello, world\n")`,
-  ],
+  hello: [String.raw`print("Hello, world\n")`, String.raw`console.log("Hello, world\n")`],
 
-  arithmetic: [
-    String.raw`5 * -2 + 8`,
-    String.raw`((5 * (-(2))) + 8)`,
-  ],
+  arithmetic: [String.raw`5 * -2 + 8`, String.raw`((5 * (-(2))) + 8)`],
 
-  letAndAssign: [
-    String.raw`let var x := 3 in x := 2 end`,
-    /let x_(\d+) = 3;\s+x_\1 = 2/,
-  ],
+  letAndAssign: [String.raw`let var x := 3 in x := 2 end`, /let x_(\d+) = 3;\s+x_\1 = 2/],
 
   call: [
     String.raw`let function f(x: int, y: string) = () in f(1, "") end`,
     /function f_(\d+)\(x_\d+, y_\d+\) \{\s*};\s*f_\1\(1, ""\)/,
   ],
 
-  whileLoop: [
-    String.raw`while 7 do break`,
-    /while \(7\) \{\s*break\s*\}/,
-  ],
+  whileLoop: [String.raw`while 7 do break`, /while \(7\) \{\s*break\s*\}/],
 
   forLoop: [
     String.raw`for i := 0 to 10 do ()`,
     /let hi_(\d+) = 10;\s*for \(let i_(\d+) = 0; i_\2 <= hi_\1; i_\2\+\+\) \{\s*\}/,
   ],
 
-  ifThen: [
-    String.raw`if 3 then 5`,
-    '((3) ? (5) : (null))',
-  ],
+  ifThen: [String.raw`if 3 then 5`, '((3) ? (5) : (null))'],
 
-  ifThenElse: [
-    String.raw`if 3 then 5 else 8`,
-    '((3) ? (5) : (8))',
-  ],
+  ifThenElse: [String.raw`if 3 then 5 else 8`, '((3) ? (5) : (8))'],
 
   member: [
     String.raw`let type r = {x:string} var p := r{x="@"} in print(p.x) end`,
@@ -88,7 +70,7 @@ const fixture = {
 
 describe('The JavaScript generator', () => {
   Object.entries(fixture).forEach(([name, [source, expected]]) => {
-    test(`produces the correct output for ${name}`, (done) => {
+    test(`produces the correct output for ${name}`, done => {
       const ast = parse(source);
       analyze(ast);
       expect(generate(ast)).toMatch(expected);
