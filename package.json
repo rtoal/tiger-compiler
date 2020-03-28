@@ -19,14 +19,14 @@
   "homepage": "https://github.com/rtoal/tiger-compiler#readme",
   "devDependencies": {
     "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.0",
-    "jest": "^25.1.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "jest": "^25.2.3",
     "prettier": "^1.19.1"
   },
   "dependencies": {
-    "eslint-plugin-prettier": "^3.1.2",
     "js-beautify": "^1.10.3",
     "ohm-js": "^0.14.0",
-    "yargs": "^15.1.0"
+    "yargs": "^15.3.1"
   }
 }
