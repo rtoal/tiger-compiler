@@ -96,9 +96,6 @@ module.exports = function(exp) {
 // as to be recursive, because the last expression of a sequence could actually
 // be a sequence....
 function makeReturn(exp) {
-  if (!exp) {
-    return undefined;
-  }
   if (exp.constructor === LetExp) {
     const filteredDecs = exp.decs.filter(d => d.constructor !== TypeDec);
     const all = [...filteredDecs, ...exp.body.slice(0, -1)].map(e => e.gen());
