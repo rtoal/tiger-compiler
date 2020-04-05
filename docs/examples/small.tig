@@ -1,0 +1,7 @@
+let
+  type point = {x: int, y: int}
+  function second(p: point): int = p.y
+  var p := point { x = 300, y = 500 }
+in
+  print(substring("the red dog", p.x - 296, second(p)))
+end
