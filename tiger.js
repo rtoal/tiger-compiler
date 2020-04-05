@@ -30,6 +30,7 @@ const util = require('util');
 const yargs = require('yargs');
 const parse = require('./ast/parser');
 const analyze = require('./semantics/analyzer');
+const { printGraph } = require('./semantics');
 require('./semantics/optimizer');
 const generate = require('./backend/javascript-generator');
 
@@ -37,14 +38,15 @@ const generate = require('./backend/javascript-generator');
 function compile(sourceCode, { astOnly, frontEndOnly, shouldOptimize }) {
   let program = parse(sourceCode);
   if (astOnly) {
-    return util.inspect(program, { depth: null });
+    return util.inspect(program, { depth: null, compact: true });
   }
   analyze(program);
   if (shouldOptimize) {
     program = program.optimize();
   }
   if (frontEndOnly) {
-    return util.inspect(program, { depth: null });
+    // return util.inspect(program, { depth: null, compact: true });
+    return printGraph(program);
   }
   return generate(program);
 }
