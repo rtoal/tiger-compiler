@@ -4,7 +4,7 @@
  * A Tiger Compiler
  *
  * This module contains functions for compiling Tiger programs into JavaScript:
- * one taking the Tiger program is a string, and the other taking in a filename.
+ * one takes the Tiger program as a string, and the other takes in a filename.
  * It can also be used a script, in which case the filename is a command line
  * argument, in addition to options. Synopsis:
  *
@@ -12,17 +12,17 @@
  *     writes out the AST and stops
  *
  * ./tiger.js -i <filename>
- *     writes the decorated AST then stops
+ *     writes the decorated AST (semantic graph) then stops
  *
  * ./tiger.js <filename>
- *     compiles the tiger program to JavaScript, writing the generated
- *     JavaScript code to standard output.
+ *     fully compiles and writes the compiled JavaScript.
  *
  * ./tiger.js -o <filename>
  *     optimizes the intermediate code before generating JavaScript.
  *
- * Output of the AST and decorated AST uses the object inspection functionality
- * built into Node.js.
+ * Output of the AST uses the object inspection functionality built into Node.js.
+ * The decorated AST (semantic graph) is printed as text for now, but graphics
+ * would be really nice to add.
  */
 
 const fs = require('fs');
@@ -30,8 +30,8 @@ const util = require('util');
 const yargs = require('yargs');
 const parse = require('./ast/parser');
 const analyze = require('./semantics/analyzer');
-const { printGraph } = require('./semantics');
-require('./semantics/optimizer');
+const graphView = require('./semantics/viewer');
+const optimize = require('./semantics/optimizer');
 const generate = require('./backend/javascript-generator');
 
 // If compiling from a string, return the AST, IR, or compiled code as a string.
@@ -42,11 +42,10 @@ function compile(sourceCode, { astOnly, frontEndOnly, shouldOptimize }) {
   }
   analyze(program);
   if (shouldOptimize) {
-    program = program.optimize();
+    optimize(program);
   }
   if (frontEndOnly) {
-    // return util.inspect(program, { depth: null, compact: true });
-    return printGraph(program);
+    return graphView(program);
   }
   return generate(program);
 }

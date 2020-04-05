@@ -1,21 +1,21 @@
 const util = require('util');
 
-function printGraph(root) {
+module.exports = root => {
   const entities = new Map();
   addReachableEntities(root, entities);
   return [...entities].map(([node, index]) => detailLine(node, index, entities)).join('\n');
-}
+};
 
 function addReachableEntities(node, entities) {
   if (node === null || typeof node !== 'object' || entities.has(node)) {
     return;
   }
   entities.set(node, entities.size);
-  Object.keys(node).forEach(key => {
-    if (Array.isArray(node[key])) {
-      node[key].forEach(n => addReachableEntities(n, entities));
+  Object.values(node).forEach(value => {
+    if (Array.isArray(value)) {
+      value.forEach(n => addReachableEntities(n, entities));
     } else {
-      addReachableEntities(node[key], entities);
+      addReachableEntities(value, entities);
     }
   });
 }
@@ -40,5 +40,3 @@ function detailLine(node, index, entities) {
   });
   return line;
 }
-
-module.exports = { printGraph };

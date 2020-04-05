@@ -23,6 +23,8 @@ const {
   WhileExp,
 } = require('../ast');
 
+module.exports = program => program.optimize();
+
 function isZero(e) {
   return e instanceof Literal && e.value === 0;
 }
