@@ -21,22 +21,21 @@ function addReachableEntities(node, entities) {
 }
 
 function ref(value, entities) {
-  if (Array.isArray(value)) {
+  if (value === undefined || typeof value === 'function') {
+    return undefined;
+  } else if (Array.isArray(value)) {
     return `[${value.map(v => ref(v, entities))}]`;
   } else if (typeof value === 'object' && value !== null) {
     return `#${entities.get(value)}`;
-  } else if (typeof value !== 'function') {
-    return util.inspect(value);
   }
+  return util.inspect(value);
 }
 
 function detailLine(node, index, entities) {
   let line = `${index} (${node.constructor.name})`;
   Object.keys(node).forEach(key => {
     const value = ref(node[key], entities);
-    if (value !== undefined) {
-      line += ` ${key}=${value}`;
-    }
+    line += value === undefined ? '' : ` ${key}=${value}`;
   });
   return line;
 }
