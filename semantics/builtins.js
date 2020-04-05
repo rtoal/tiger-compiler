@@ -19,10 +19,8 @@ const standardFunctions = [
   new Func('exit', [new Param('code', IntType)]),
 ];
 
-/* eslint-disable no-param-reassign */
 standardFunctions.forEach(f => {
   f.builtin = true;
 });
-/* eslint-enable no-param-reassign */
 
 module.exports = { IntType, StringType, NilType, standardFunctions };
