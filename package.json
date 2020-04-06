@@ -25,6 +25,7 @@
     "prettier": "^1.19.1"
   },
   "dependencies": {
+    "d3-node": "^2.2.1",
     "js-beautify": "^1.10.3",
     "ohm-js": "^0.14.0",
     "yargs": "^15.3.1"
