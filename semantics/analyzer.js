@@ -106,7 +106,7 @@ ForExp.prototype.analyze = function(context) {
   const bodyContext = context.createChildContextForLoop();
   this.index = new Variable(this.index, this.low.type);
   this.index.readOnly = true;
-  bodyContext.add(this.index);
+  bodyContext.add(this.index.id, this.index);
   this.body.analyze(bodyContext);
 };
 
@@ -148,9 +148,9 @@ IfExp.prototype.analyze = function(context) {
 
 LetExp.prototype.analyze = function(context) {
   const newContext = context.createChildContextForBlock();
-  this.decs.filter(d => d.constructor === TypeDec).map(d => newContext.add(d));
+  this.decs.filter(d => d.constructor === TypeDec).map(d => newContext.add(d.id, d.type));
   this.decs.filter(d => d.constructor === Func).map(d => d.analyzeSignature(newContext));
-  this.decs.filter(d => d.constructor === Func).map(d => newContext.add(d));
+  this.decs.filter(d => d.constructor === Func).map(d => newContext.add(d.id, d));
   this.decs.map(d => d.analyze(newContext));
   check.noRecursiveTypeCyclesWithoutRecordTypes(this.decs);
   this.body.map(e => e.analyze(newContext));
@@ -186,7 +186,7 @@ Nil.prototype.analyze = function() {
 
 Param.prototype.analyze = function(context) {
   this.type = context.lookup(this.type);
-  context.add(this);
+  context.add(this.id, this);
 };
 
 RecordExp.prototype.analyze = function(context) {
@@ -237,7 +237,7 @@ Variable.prototype.analyze = function(context) {
     // Yay! type inference!
     this.type = this.init.type;
   }
-  context.add(this);
+  context.add(this.id, this);
 };
 
 WhileExp.prototype.analyze = function(context) {

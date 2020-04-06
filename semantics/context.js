@@ -6,7 +6,6 @@
  *   const Context = require('./semantics/context');
  */
 
-const { TypeDec } = require('../ast');
 const { standardFunctions, IntType, StringType, NilType } = require('./builtins');
 
 require('./analyzer');
@@ -55,13 +54,12 @@ class Context {
     });
   }
 
-  // Adds a declaration to this context.
-  add(declaration) {
-    if (this.locals.has(declaration.id)) {
-      throw new Error(`${declaration.id} already declared in this scope`);
+  // Adds a new binding to this context.
+  add(id, entity) {
+    if (this.locals.has(id)) {
+      throw new Error(`${id} already declared in this scope`);
     }
-    const entity = declaration instanceof TypeDec ? declaration.type : declaration;
-    this.locals.set(declaration.id, entity);
+    this.locals.set(id, entity);
   }
 
   // Returns the entity bound to the given identifier, starting from this
@@ -78,7 +76,7 @@ class Context {
 
 Context.INITIAL = new Context();
 [IntType, StringType, NilType, ...standardFunctions].forEach(entity => {
-  Context.INITIAL.add(entity);
+  Context.INITIAL.add(entity.id, entity);
 });
 
 module.exports = Context;
